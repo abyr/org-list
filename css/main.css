@@ -1,0 +1,49 @@
+:root {
+
+    --main-bg-color: #eeeeee;
+    --main-text-color: #252422ff;
+
+    --bright-fire-opal: #ee6055ff;
+    --bright-medium-aquamarine: #60d394ff;
+    --bright-mint-green: #aaf683ff;
+    --bright-orange-yellow-crayola: #ffd97dff;
+    --bright-vivid-tangerine: #ff9b85ff;
+    --bright-sky: #a8f0ffff;
+
+    --warm-bittersweet: #ee7162ff;
+    --warm-melon: #fcaaa1ff;
+    --warm-magic-mint: #abedc6ff;
+    --warm-tea-green: #caffd0ff;
+    --warm-blizzard-blue: #a8f0ffff;
+
+    --level-expert: #53ef8b;
+    --level-proficient: #36eaaa;
+    --level-competent: #59d2feff;
+    --level-advanced-beginner: #ffce00;
+    --level-novice: #ff9a00;
+    --level-failed: #fc7174;
+}
+
+html {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+body.theme-bright {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+body.theme-warm {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+/** End Themes **/
+
+ul, nav {
+    list-style: square;
+}
+
+ol li {
+    list-style-type: none;
+    font-size: 1.5em;
+    font-weight: bold;
+}

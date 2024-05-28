@@ -1,0 +1,3 @@
+[submodule "deps/client-side-storage"]
+	path = deps/client-side-storage
+	url = https://github.com/abyr/client-side-storage.git

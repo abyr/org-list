@@ -97,8 +97,6 @@ class LayoutView extends AsyncView {
         const el = evnt.currentTarget;
         const noteId = el.dataset.id;
 
-        console.log('click', noteId);
-
         await this.notesAdapter.delete(Number(noteId));
         await this.asyncRender();
     }

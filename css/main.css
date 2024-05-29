@@ -47,3 +47,26 @@ ol li {
     font-size: 1.5em;
     font-weight: bold;
 }
+
+/**************/
+#org-list {
+    font-size: 16px;
+}
+.notes-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.notes-item {
+    height: 24px;
+}
+.note {
+    
+}
+.note.completed label {
+    text-decoration: line-through;
+}
+.note .details {
+    font-size: 12px;
+
+}

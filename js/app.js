@@ -1,9 +1,7 @@
 import LayoutView from './layout-view.js';
 
 const onWindowLoad = async () => {
-    console.log('onload');
-
-    const appEl = document.querySelector('#main-container');
+    const appEl = document.querySelector('#org-list');
 
     const layout = new LayoutView({ element: appEl });
 

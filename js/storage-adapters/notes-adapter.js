@@ -33,6 +33,7 @@ class NotesStoreAdapter extends CacheableAdapter {
                 fieldsData.createdAt = timestamp;
                 fieldsData.completed = false;
             } else {
+                fieldsData.id = id;
                 fieldsData.updatedAt = timestamp;
             }
 

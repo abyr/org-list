@@ -4,19 +4,6 @@
     --main-text-color: #252422ff;
     --main-alert-bg: #fec1ba;
     --main-hover-bg: #e1e2e3;
-
-    --bright-fire-opal: #ee6055ff;
-    --bright-medium-aquamarine: #60d394ff;
-    --bright-mint-green: #aaf683ff;
-    --bright-orange-yellow-crayola: #ffd97dff;
-    --bright-vivid-tangerine: #ff9b85ff;
-    --bright-sky: #a8f0ffff;
-
-    --warm-bittersweet: #ee7162ff;
-    --warm-melon: #fcaaa1ff;
-    --warm-magic-mint: #abedc6ff;
-    --warm-tea-green: #caffd0ff;
-    --warm-blizzard-blue: #a8f0ffff;
 }
 
 html {
@@ -57,6 +44,16 @@ button {
     font-size: 16px;
 }
 
+.box {
+    width: 100%;
+    margin: 24px 0;
+}
+
+.add-note-box {
+    width: 100%;
+    margin: 24px 0;
+}
+
 ul.notes-list {
     width: 100%;
     margin: 24px 0;
@@ -64,6 +61,7 @@ ul.notes-list {
 
 li.notes-item {
     width: 100%;
+    padding: 8px 0;
 }
 
 .note {
@@ -75,17 +73,22 @@ li.notes-item {
 }
 
 .note .headline {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+}
+
+.note .details {
+    font-size: 12px;
+    display: none;
+}
+.note:hover .details {
+    display: inline-block;
 }
 
 .note .controls {
     margin-left: auto;
 }
 
-.note.completed label {
+.note .completed label {
     text-decoration: line-through;
 }
 
-.note .details {
-    font-size: 12px;
-}

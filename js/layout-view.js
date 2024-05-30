@@ -41,13 +41,15 @@ class LayoutView extends AsyncView {
         const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
 
         return `
-            <div>
+            <div class="box add-note">
                 <input id="add-note-input" type="text" placeholder="Add a note..." ></input>
             </div>
 
-            Have ${incompletedNotes.length} notes.
+            <div class="box">
+                Have ${incompletedNotes.length} notes.
+            <div>
 
-            <ul class="notes-list"> 
+            <ul class="box notes-list"> 
                 ${incompletedNotes.map(x => {
                     return `
                         <li class="notes-item note">
@@ -61,6 +63,12 @@ class LayoutView extends AsyncView {
                                 <label for="toggle-completed-${x.id}">${x.title}</label>
                             </div>
                             <div class="controls">
+                                <span class="details">
+                                    ${x.updatedAt ? 
+                                        new Date(x.updatedAt).toLocaleString() :
+                                        new Date(x.createdAt).toLocaleString()
+                                    }
+                                </span>
                                 <button class="delete-btn" data-id="${x.id}" aria-label="Delete">&#10005;</button>
                             </div>
                         </li>
@@ -81,14 +89,15 @@ class LayoutView extends AsyncView {
                                 
                                 <label for="toggle-completed-${x.id}">${x.title}</label>
                                 
+                                
+                            </div>
+                            <div class="controls">          
                                 <span class="details">
                                     ${x.updatedAt ? 
-                                        'edited ' + (new Date(x.updatedAt).toLocaleString()):
-                                        'created ' + (new Date(x.createdAt).toLocaleString())
+                                        new Date(x.updatedAt).toLocaleString() :
+                                        new Date(x.createdAt).toLocaleString()
                                     }
-                                </span>
-                            </div>
-                            <div class="controls">                                
+                                </span>              
                                 <button class="delete-btn" data-id="${x.id}" aria-label="Delete">&#10005;</button>
                             </div>
                         </li>

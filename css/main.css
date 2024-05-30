@@ -2,6 +2,8 @@
 
     --main-bg-color: #eeeeee;
     --main-text-color: #252422ff;
+    --main-alert-bg: #fec1ba;
+    --main-hover-bg: #e1e2e3;
 
     --bright-fire-opal: #ee6055ff;
     --bright-medium-aquamarine: #60d394ff;
@@ -15,13 +17,6 @@
     --warm-magic-mint: #abedc6ff;
     --warm-tea-green: #caffd0ff;
     --warm-blizzard-blue: #a8f0ffff;
-
-    --level-expert: #53ef8b;
-    --level-proficient: #36eaaa;
-    --level-competent: #59d2feff;
-    --level-advanced-beginner: #ffce00;
-    --level-novice: #ff9a00;
-    --level-failed: #fc7174;
 }
 
 html {
@@ -39,7 +34,9 @@ body.theme-warm {
 /** End Themes **/
 
 ul, nav {
-    list-style: square;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 ol li {
@@ -48,25 +45,47 @@ ol li {
     font-weight: bold;
 }
 
+button {
+    background-color: var(--main-alert-bg);
+    border: 1px solid var(--main-text-color);
+    cursor: pointer;
+}
+
 /**************/
+
 #org-list {
     font-size: 16px;
 }
-.notes-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+
+ul.notes-list {
+    width: 100%;
+    margin: 24px 0;
 }
-.notes-item {
-    height: 24px;
+
+li.notes-item {
+    width: 100%;
 }
+
 .note {
-    
+    display: flex;
 }
+
+.note:hover {
+    background-color: var(--main-hover-bg);
+}
+
+.note .headline {
+    flex: 1 1 auto;
+}
+
+.note .controls {
+    margin-left: auto;
+}
+
 .note.completed label {
     text-decoration: line-through;
 }
+
 .note .details {
     font-size: 12px;
-
 }

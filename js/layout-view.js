@@ -37,18 +37,42 @@ class LayoutView extends AsyncView {
     async getAsyncHtml() {
         const notes = await this.getNotes();
 
+        const incompletedNotes = notes.filter(x => !x.completed).sort(sortByTimeDESC);
+        const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
+
         return `
             <div>
                 <input id="add-note-input" type="text" placeholder="Add a note..." ></input>
             </div>
 
-            Have ${notes.length} notes.
+            Have ${incompletedNotes.length} notes.
 
             <ul class="notes-list"> 
-                ${notes.map(x => {
+                ${incompletedNotes.map(x => {
                     return `
-                        <li class="notes-item">
-                            <div class="note ${x.completed ? 'completed' : ''}">
+                        <li class="notes-item note">
+                            <div class="headline ${x.completed ? 'completed' : ''}">
+                                <input type="checkbox"
+                                    id="toggle-completed-${x.id}"
+                                    class="toogle-completed"
+                                    data-id="${x.id}"
+                                    ${x.completed ? 'checked' : ''} />
+                                
+                                <label for="toggle-completed-${x.id}">${x.title}</label>
+                            </div>
+                            <div class="controls">
+                                <button class="delete-btn" data-id="${x.id}" aria-label="Delete">&#10005;</button>
+                            </div>
+                        </li>
+                    `;
+                }).join('')} 
+            </ul>
+
+            <ul class="notes-list"> 
+                ${completedNotes.map(x => {
+                    return `
+                        <li class="notes-item note">
+                            <div class="headline ${x.completed ? 'completed' : ''}">
                                 <input type="checkbox"
                                     id="toggle-completed-${x.id}"
                                     class="toogle-completed"
@@ -57,14 +81,15 @@ class LayoutView extends AsyncView {
                                 
                                 <label for="toggle-completed-${x.id}">${x.title}</label>
                                 
-                                <button class="delete-btn" data-id="${x.id}">Delete</button>
-                                
                                 <span class="details">
                                     ${x.updatedAt ? 
                                         'edited ' + (new Date(x.updatedAt).toLocaleString()):
                                         'created ' + (new Date(x.createdAt).toLocaleString())
                                     }
                                 </span>
+                            </div>
+                            <div class="controls">                                
+                                <button class="delete-btn" data-id="${x.id}" aria-label="Delete">&#10005;</button>
                             </div>
                         </li>
                     `;
@@ -122,6 +147,13 @@ class LayoutView extends AsyncView {
     async getNotes() {
         return await this.notesAdapter.getAll();
     }
+}
+
+function sortByTimeDESC (a, b) {
+    const aTime = a.updatedAt || a.createdAt;
+    const bTime = b.updatedAt || b.createdAt;
+    
+    return bTime - aTime;
 }
 
 export default LayoutView;

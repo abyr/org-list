@@ -1,8 +1,17 @@
 import AsyncView from './classes/async-view.js';
 import NotesStoreAdapter from './storage-adapters/notes-adapter.js';
 import ListsStoreAdapter from './storage-adapters/lists-adapter.js';
+import ExportImport from './export-import.js';
 
 class LayoutView extends AsyncView {
+
+    constructor({ element }) {
+        super({ element });
+
+        this.element = element;
+
+        this.importExport = new ExportImport();
+    }
 
     async init() {
         this.notesAdapter = new NotesStoreAdapter();
@@ -10,6 +19,8 @@ class LayoutView extends AsyncView {
 
         await this.notesAdapter.connect();
         await this.listsAdapter.connect();
+
+        await this.importExport.init();
     }
 
     async asyncRender() {
@@ -31,6 +42,16 @@ class LayoutView extends AsyncView {
 
         Array.from(toggleCompletedEl).forEach(btn => {
             btn.addEventListener('change', this.toggleCompleted.bind(this));
+        });
+
+        document.getElementById('exporter').addEventListener('click', () => {
+            this.importExport.export();
+        });
+    
+        document.getElementById('importer').addEventListener('change', async e => {
+            this.importExport.importFile(e);
+            
+            await this.asyncRender();
         });
     }
 
@@ -104,6 +125,12 @@ class LayoutView extends AsyncView {
                     `;
                 }).join('')} 
             </ul>
+
+            <div>
+                <input type="button" value="Export" id="exporter" />
+                <label for="importer">Import</label>
+                <input type="file" id="importer">
+            </div>
         `;
     }
 

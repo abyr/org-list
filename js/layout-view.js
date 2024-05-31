@@ -32,10 +32,16 @@ class LayoutView extends AsyncView {
 
         addNoteEl.addEventListener('keydown', this.addNote.bind(this));
 
-        const deleteBtnEls = document.querySelectorAll('.delete-btn');
+        const deleteBtnEls = document.querySelectorAll('.delete');
 
         Array.from(deleteBtnEls).forEach(btn => {
             btn.addEventListener('click', this.deleteNote.bind(this));
+        });
+
+        const starBtnEls = document.querySelectorAll('.star');
+
+        Array.from(starBtnEls).forEach(btn => {
+            btn.addEventListener('click', this.starNote.bind(this));
         });
 
         const toggleCompletedEl = document.querySelectorAll('.toogle-completed');
@@ -58,7 +64,7 @@ class LayoutView extends AsyncView {
     async getAsyncHtml() {
         const notes = await this.getNotes();
 
-        const incompletedNotes = notes.filter(x => !x.completed).sort(sortByTimeDESC);
+        const incompletedNotes = notes.filter(x => !x.completed).sort(sortByTimeDESC).sort(sortByStarredASC);
         const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
 
         return `
@@ -90,7 +96,15 @@ class LayoutView extends AsyncView {
                                         new Date(x.createdAt).toLocaleString()
                                     }
                                 </span>
-                                <button class="delete-btn" data-id="${x.id}" aria-label="Delete">&#10005;</button>
+                                
+                                <button class="star ${x.starred ? 'starred' : '' }" 
+                                    data-id="${x.id}" 
+                                    aria-label="${x.starred ? 'Unstar' : 'Star' }"
+                                >
+                                    ${x.starred ? '&starf;' : '&star;' }
+                                </button>
+                                
+                                <button class="delete" data-id="${x.id}" aria-label="Delete">&#10005;</button>
                             </div>
                         </li>
                     `;
@@ -162,6 +176,20 @@ class LayoutView extends AsyncView {
         await this.asyncRender();
     }
 
+    async starNote(evnt) {
+        evnt.preventDefault();
+
+        const el = evnt.currentTarget;
+        const noteId = el.dataset.id;
+
+        const note = await this.getNote(noteId);
+
+        note.starred = !note.starred;
+
+        await this.notesAdapter.put(Number(noteId), note);
+        await this.asyncRender();
+    }
+
     async toggleCompleted(evnt) {
         evnt.preventDefault();
 
@@ -190,6 +218,10 @@ function sortByTimeDESC (a, b) {
     const bTime = b.updatedAt || b.createdAt;
     
     return bTime - aTime;
+}
+
+function sortByStarredASC (a, b) {
+    return +b.starred - +a.starred;
 }
 
 export default LayoutView;

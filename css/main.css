@@ -33,9 +33,15 @@ ol li {
 }
 
 button {
-    background-color: var(--main-alert-bg);
     border: 1px solid var(--main-text-color);
     cursor: pointer;
+}
+button.delete {
+    background-color: var(--main-alert-bg);
+}
+button.star:hover, 
+button.starred {
+    font-weight: bold;
 }
 
 /**************/

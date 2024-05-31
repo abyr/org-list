@@ -64,7 +64,11 @@ class LayoutView extends AsyncView {
     async getAsyncHtml() {
         const notes = await this.getNotes();
 
-        const incompletedNotes = notes.filter(x => !x.completed).sort(sortByTimeDESC).sort(sortByStarredASC);
+        const incompletedNotes = notes.filter(x => !x.completed)
+            .sort(sortByTimeDESC)
+            .sort(sortByStarredASC)
+            ;
+            
         const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
 
         return `
@@ -221,7 +225,7 @@ function sortByTimeDESC (a, b) {
 }
 
 function sortByStarredASC (a, b) {
-    return +b.starred - +a.starred;
+    return (b.starred ? 1 : 0) - (a.starred ? 1 : 0);
 }
 
 export default LayoutView;

@@ -21,10 +21,6 @@ class ExportImport {
         });
     }
 
-    async getResult(key) {        
-        return await this.notesAdapter.get(key);
-    }
-
     async getAll() {
         return await this.notesAdapter.getAll();
     }
@@ -68,10 +64,6 @@ class ExportImport {
             });
         };
         reader.readAsText(files[0]);
-    }
-
-    import(rawString) {
-        this.storage.import(JSON.parse(rawString));
     }
 
     getFileName() {

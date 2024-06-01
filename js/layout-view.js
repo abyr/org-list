@@ -76,10 +76,6 @@ class LayoutView extends AsyncView {
                 <input id="add-note-input" type="text" placeholder="Add a note..." ></input>
             </div>
 
-            <div class="box">
-                Have ${incompletedNotes.length} notes.
-            <div>
-
             <ul class="box notes-list"> 
                 ${incompletedNotes.map(x => {
                     return `

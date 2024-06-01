@@ -43,7 +43,7 @@ class ExportImport {
         vLink.click();
     }    
 
-    importFile(e) {
+    importFile() {
         var files = event.target.files;
 
         if (files.length === 0) {
@@ -70,7 +70,7 @@ class ExportImport {
         const date = new Date();
 
         const isoStamp = date.toISOString().slice(0,19)
-            .replace(/[\-\:]/gi, '')
+            .replace(/[\-:]/gi, '')
             .replace('T', '-');
 
         return `orglist-${isoStamp}.json`;

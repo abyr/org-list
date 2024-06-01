@@ -171,6 +171,10 @@ class LayoutView extends AsyncView {
     }
 
     async deleteNote(evnt) {
+        if (!window.confirm('Delete note?')) {
+            return;
+        }
+
         evnt.preventDefault();
 
         const el = evnt.currentTarget;

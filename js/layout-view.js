@@ -24,9 +24,7 @@ class LayoutView extends AsyncView {
     }
 
     async asyncRender() {
-        const html = await this.getAsyncHtml();
-
-        this.element.innerHTML = html;
+        this.element.innerHTML = await this.getAsyncHtml();
 
         const addNoteEl = document.querySelector('#add-note-input');
 
@@ -44,7 +42,7 @@ class LayoutView extends AsyncView {
             btn.addEventListener('click', this.starNote.bind(this));
         });
 
-        const toggleCompletedEl = document.querySelectorAll('.toogle-completed');
+        const toggleCompletedEl = document.querySelectorAll('.toggle-completed');
 
         Array.from(toggleCompletedEl).forEach(btn => {
             btn.addEventListener('change', this.toggleCompleted.bind(this));
@@ -64,7 +62,7 @@ class LayoutView extends AsyncView {
     async getAsyncHtml() {
         const notes = await this.getNotes();
 
-        const incompletedNotes = notes.filter(x => !x.completed)
+        const incompleteNotes = notes.filter(x => !x.completed)
             .sort(sortByTimeDESC)
             .sort(sortByStarredASC)
             ;
@@ -73,17 +71,17 @@ class LayoutView extends AsyncView {
 
         return `
             <div class="box add-note">
-                <input id="add-note-input" type="text" placeholder="Add a note..." ></input>
+                <input id="add-note-input" type="text" placeholder="Add a note..." />
             </div>
 
             <ul class="box notes-list"> 
-                ${incompletedNotes.map(x => {
+                ${incompleteNotes.map(x => {
                     return `
                         <li class="notes-item note">
                             <div class="headline ${x.completed ? 'completed' : ''}">
                                 <input type="checkbox"
                                     id="toggle-completed-${x.id}"
-                                    class="toogle-completed"
+                                    class="toggle-completed"
                                     data-id="${x.id}"
                                     ${x.completed ? 'checked' : ''} />
                                 
@@ -118,7 +116,7 @@ class LayoutView extends AsyncView {
                             <div class="headline ${x.completed ? 'completed' : ''}">
                                 <input type="checkbox"
                                     id="toggle-completed-${x.id}"
-                                    class="toogle-completed"
+                                    class="toggle-completed"
                                     data-id="${x.id}"
                                     ${x.completed ? 'checked' : ''} />
                                 
@@ -148,14 +146,14 @@ class LayoutView extends AsyncView {
         `;
     }
 
-    async addNote(evnt) {
-        if (evnt.key !== "Enter") {
+    async addNote(event) {
+        if (event.key !== "Enter") {
             return;
         }
 
-        evnt.preventDefault();
+        event.preventDefault();
 
-        const el = evnt.currentTarget;
+        const el = event.currentTarget;
         const text = el.value.trim();
 
         if (text) {
@@ -166,14 +164,14 @@ class LayoutView extends AsyncView {
         }
     }
 
-    async deleteNote(evnt) {
+    async deleteNote(event) {
         if (!window.confirm('Delete note?')) {
             return;
         }
 
-        evnt.preventDefault();
+        event.preventDefault();
 
-        const el = evnt.currentTarget;
+        const el = event.currentTarget;
         const noteId = el.dataset.id;
 
         await this.notesAdapter.delete(Number(noteId));

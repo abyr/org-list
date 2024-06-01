@@ -1,6 +1,9 @@
 # Sources
 private/
 
+# Editor
+.idea
+
 # Logs
 logs
 *.log

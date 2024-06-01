@@ -69,7 +69,9 @@ class ExportImport {
     getFileName() {
         const date = new Date();
 
-        const isoStamp = date.toISOString().slice(0,19).replace(/[T\-\:]/gi, '');
+        const isoStamp = date.toISOString().slice(0,19)
+            .replace(/[\-\:]/gi, '')
+            .replace('T', '-');
 
         return `orglist-${isoStamp}.json`;
     }

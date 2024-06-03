@@ -67,11 +67,11 @@ class LayoutView extends AsyncView {
         const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
 
         return `
-            <div class="box add-note">
-                <input id="add-note-input" type="text" placeholder="Add a note..." />
+            <div class="box add-note-box">
+                <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
             </div>
 
-            <ul class="box notes-list"> 
+            <ul class="box notes-list-box"> 
                 ${incompleteNotes.map(x => {
                     return `
                         <li class="notes-item note">
@@ -106,7 +106,7 @@ class LayoutView extends AsyncView {
                 }).join('')} 
             </ul>
 
-            <ul class="notes-list"> 
+            <ul class="notes-list-box"> 
                 ${completedNotes.map(x => {
                     return `
                         <li class="notes-item note">

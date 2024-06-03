@@ -39,9 +39,14 @@ button {
 button.delete {
     background-color: var(--main-alert-bg);
 }
-button.star:hover, 
+button.star:hover,
 button.starred {
     font-weight: bold;
+}
+
+.box {
+    width: 100%;
+    margin: 24px 0;
 }
 
 /**************/
@@ -50,17 +55,16 @@ button.starred {
     font-size: 16px;
 }
 
-.box {
-    width: 100%;
-    margin: 24px 0;
-}
-
 .add-note-box {
+    padding: 16px;
+    box-sizing: border-box;
+}
+.add-note-box .add-note-input {
     width: 100%;
-    margin: 24px 0;
+    line-height: 24px
 }
 
-ul.notes-list {
+.notes-list-box {
     width: 100%;
     margin: 24px 0;
 }

@@ -1,7 +1,7 @@
-import AsyncView from './classes/async-view.js';
-import NotesStoreAdapter from './storage-adapters/notes-adapter.js';
-import ListsStoreAdapter from './storage-adapters/lists-adapter.js';
-import ExportImport from './export-import.js';
+import AsyncView from '../classes/async-view.js';
+import NotesStoreAdapter from '../storage-adapters/notes-adapter.js';
+import ListsStoreAdapter from '../storage-adapters/lists-adapter.js';
+import ExportImportView from "./export-import-view.js";
 
 class LayoutView extends AsyncView {
 
@@ -9,8 +9,6 @@ class LayoutView extends AsyncView {
         super({ element });
 
         this.element = element;
-
-        this.importExport = new ExportImport();
     }
 
     async init() {
@@ -19,12 +17,14 @@ class LayoutView extends AsyncView {
 
         await this.notesAdapter.connect();
         await this.listsAdapter.connect();
-
-        await this.importExport.init();
     }
 
     async asyncRender() {
+        this.cleanup();
+
         this.element.innerHTML = await this.getAsyncHtml();
+
+        this.renderExportImport();
 
         const addNoteEl = document.querySelector('#add-note-input');
 
@@ -47,16 +47,13 @@ class LayoutView extends AsyncView {
         Array.from(toggleCompletedEl).forEach(btn => {
             btn.addEventListener('change', this.toggleCompleted.bind(this));
         });
+    }
 
-        document.getElementById('exporter').addEventListener('click', () => {
-            this.importExport.export();
+    renderExportImport() {
+        this.expImp = new ExportImportView({
+            element: document.getElementById('export-import')
         });
-    
-        document.getElementById('importer').addEventListener('change', async e => {
-            this.importExport.importFile(e);
-            
-            await this.asyncRender();
-        });
+        this.expImp.render();
     }
 
     async getAsyncHtml() {
@@ -138,11 +135,7 @@ class LayoutView extends AsyncView {
                 }).join('')} 
             </ul>
 
-            <div>
-                <input type="button" value="Export" id="exporter" />
-                <label for="importer">Import</label>
-                <input type="file" id="importer">
-            </div>
+            <div id="export-import" class="box"></div>
         `;
     }
 
@@ -178,10 +171,10 @@ class LayoutView extends AsyncView {
         await this.asyncRender();
     }
 
-    async starNote(evnt) {
-        evnt.preventDefault();
+    async starNote(event) {
+        event.preventDefault();
 
-        const el = evnt.currentTarget;
+        const el = event.currentTarget;
         const noteId = el.dataset.id;
 
         const note = await this.getNote(noteId);
@@ -192,10 +185,10 @@ class LayoutView extends AsyncView {
         await this.asyncRender();
     }
 
-    async toggleCompleted(evnt) {
-        evnt.preventDefault();
+    async toggleCompleted(event) {
+        event.preventDefault();
 
-        const el = evnt.currentTarget;
+        const el = event.currentTarget;
         const noteId = el.dataset.id;
 
         const note = await this.getNote(noteId);
@@ -212,6 +205,19 @@ class LayoutView extends AsyncView {
 
     async getNotes() {
         return await this.notesAdapter.getAll();
+    }
+
+    cleanup() {
+        if (this.expImp) {
+            this.expImp.destroy();
+            this.expImp = null;
+        }
+        super.cleanup();
+    }
+
+    destroy() {
+        super.destroy();
+        this.expImp = null;
     }
 }
 

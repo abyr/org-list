@@ -1,4 +1,4 @@
-import LayoutView from './layout-view.js';
+import LayoutView from './views/layout-view.js';
 
 const onWindowLoad = async () => {
     const appEl = document.querySelector('#org-list');

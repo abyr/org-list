@@ -43,7 +43,7 @@ class ExportImport {
         vLink.click();
     }    
 
-    importFile() {
+    importFile(event) {
         var files = event.target.files;
 
         if (files.length === 0) {

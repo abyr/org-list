@@ -32,12 +32,12 @@ class ExportImportView extends View {
         await this.importExport.export();
     }
 
-    async import() {
+    async import(event) {
         if (!window.confirm('All data will be replaced by the imported file. Continue?')) {
             return;
         }
         await this.importExport.init();
-        this.importExport.importFile(e);
+        this.importExport.importFile(event);
 
         window.location.reload();
     }

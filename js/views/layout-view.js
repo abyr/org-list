@@ -2,6 +2,7 @@ import AsyncView from '../classes/async-view.js';
 import NotesStoreAdapter from '../storage-adapters/notes-adapter.js';
 import ListsStoreAdapter from '../storage-adapters/lists-adapter.js';
 import NotesView from './notes-view.js';
+import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
 import TagsView from './tags-view.js';
 import messageBus from '../classes/shared-message-bus.js';
@@ -84,17 +85,12 @@ class LayoutView extends AsyncView {
 
         const incompleteNotes = notes.filter(x => !x.completed)
 
-        if (!incompleteNotes.length) {
-            document.getElementById('incomplete-notes').innerHTML = 'Nothing to do.';
-            return;
-        }
-
-        const sortedNotes = incompleteNotes.filter(x => !x.completed)
+        const sortedNotes = incompleteNotes
             .sort(sortByTimeDESC)
             .sort(sortByStarredASC)
         ;
 
-        this.incompleteView = new NotesView({
+        this.incompleteView = new IncompleteNotesView({
             element: document.getElementById('incomplete-notes')
         });
         this.incompleteView.setNotes(sortedNotes);
@@ -128,7 +124,7 @@ class LayoutView extends AsyncView {
             </div>
             
             ${this.filter ? `
-                <button id="reset-filter-btn"><</button>
+                <button id="reset-filter-btn"> < </button>
             ` : ''}
             
             <div id="tags"></div>

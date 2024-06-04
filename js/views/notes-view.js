@@ -21,6 +21,12 @@ class NotesView extends View {
     render() {
         super.render();
 
+        const notes = this.getNotes();
+
+        if (!notes.length){
+            return;
+        }
+
         const deleteBtnEls = this.element.querySelectorAll('.delete');
 
         Array.from(deleteBtnEls).forEach(btn => {
@@ -44,7 +50,7 @@ class NotesView extends View {
         const notes = this.getNotes();
 
         if (!notes.length) {
-            return ``;
+            return this.getEmptyHtml();
         }
 
         return `
@@ -86,6 +92,10 @@ class NotesView extends View {
                 }).join('')} 
             </ul>
         `;
+    }
+
+    getEmptyHtml() {
+        return ``;
     }
 
     async deleteNote(event) {

@@ -18,10 +18,10 @@ class TagsView extends View {
             <ul class="box tags-box list">
                 ${tags.map(tag => {
                     return `
-                                <li class="tags-item tag">
-                                    <button class="tag-btn" data-tag="${tag}">${tag}</button>
-                                </li>
-                            `;
+                        <li class="tags-item tag">
+                            <button class="tag-btn" data-tag="${tag}">${tag}</button>
+                        </li>
+                    `;
                 }).join('')}
             </ul>
         `;

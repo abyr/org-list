@@ -116,8 +116,6 @@ class LayoutView extends AsyncView {
     }
 
     async getAsyncHtml() {
-        const notes = await this.getNotes();
-
         return `
             <div class="box add-note-box">
                 <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />

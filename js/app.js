@@ -7,7 +7,7 @@ const onWindowLoad = async () => {
 
     await layout.init();
 
-    layout.asyncRender();
+    await layout.asyncRender();
 };
 
 window.addEventListener("load", onWindowLoad);

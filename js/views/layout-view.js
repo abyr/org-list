@@ -1,7 +1,10 @@
 import AsyncView from '../classes/async-view.js';
 import NotesStoreAdapter from '../storage-adapters/notes-adapter.js';
 import ListsStoreAdapter from '../storage-adapters/lists-adapter.js';
+import NotesView from './notes-view.js';
 import ExportImportView from "./export-import-view.js";
+import TagsView from './tags-view.js';
+import messageBus from '../classes/shared-message-bus.js';
 
 class LayoutView extends AsyncView {
 
@@ -9,6 +12,9 @@ class LayoutView extends AsyncView {
         super({ element });
 
         this.element = element;
+
+        messageBus.subscribe('note:updated', this.refresh.bind(this));
+        messageBus.subscribe('tag:selected', this.saveFilter.bind(this));
     }
 
     async init() {
@@ -24,117 +30,112 @@ class LayoutView extends AsyncView {
 
         this.element.innerHTML = await this.getAsyncHtml();
 
-        this.renderExportImport();
-
-        const addNoteEl = document.querySelector('#add-note-input');
+        const addNoteEl = document.getElementById('add-note-input');
 
         addNoteEl.addEventListener('keydown', this.addNote.bind(this));
 
-        const deleteBtnEls = document.querySelectorAll('.delete');
+        await this.renderTags();
 
-        Array.from(deleteBtnEls).forEach(btn => {
-            btn.addEventListener('click', this.deleteNote.bind(this));
+        if (this.filter) {
+            const resetFilter = document.getElementById('reset-filter-btn');
+
+            resetFilter.addEventListener('click', this.resetFilter.bind(this));
+        }
+
+        await this.renderIncompleteNotes();
+        await this.renderCompletedNotes();
+
+        if (!this.filter) {
+            this.renderExportImport();
+        }
+    }
+
+    async renderTags() {
+        const notes = await this.getNotes();
+
+        const tags = notes.reduce((res, note) => {
+            const newTags = note.title.split(' ').filter(word=> {
+                const isTag = word.startsWith('#');
+
+                if (!isTag) {
+                    return false;
+                }
+
+                return !res.includes(word);
+            });
+
+            if (newTags) {
+                res = res.concat(newTags);
+            }
+
+            return res;
+        }, ['#focus']).map(x => x.substring(1));
+
+        this.tagsView = new TagsView({
+            element: document.getElementById('tags')
         });
 
-        const starBtnEls = document.querySelectorAll('.star');
+        this.tagsView.setTags(tags);
+        this.tagsView.render();
+    }
 
-        Array.from(starBtnEls).forEach(btn => {
-            btn.addEventListener('click', this.starNote.bind(this));
+    async renderIncompleteNotes() {
+        const notes = await this.getNotes();
+
+        const incompleteNotes = notes.filter(x => !x.completed)
+
+        if (!incompleteNotes.length) {
+            document.getElementById('incomplete-notes').innerHTML = 'Nothing to do.';
+            return;
+        }
+
+        const sortedNotes = incompleteNotes.filter(x => !x.completed)
+            .sort(sortByTimeDESC)
+            .sort(sortByStarredASC)
+        ;
+
+        this.incompleteView = new NotesView({
+            element: document.getElementById('incomplete-notes')
         });
+        this.incompleteView.setNotes(sortedNotes);
+        this.incompleteView.render();
+    }
 
-        const toggleCompletedEl = document.querySelectorAll('.toggle-completed');
+    async renderCompletedNotes() {
+        const notes = await this.getNotes();
+        const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
 
-        Array.from(toggleCompletedEl).forEach(btn => {
-            btn.addEventListener('change', this.toggleCompleted.bind(this));
+        this.completedView = new NotesView({
+            element: document.getElementById('completed-notes')
         });
+        this.completedView.setNotes(completedNotes);
+        this.completedView.render();
     }
 
     renderExportImport() {
-        this.expImp = new ExportImportView({
+        this.expImpView = new ExportImportView({
             element: document.getElementById('export-import')
         });
-        this.expImp.render();
+        this.expImpView.render();
     }
 
     async getAsyncHtml() {
         const notes = await this.getNotes();
 
-        const incompleteNotes = notes.filter(x => !x.completed)
-            .sort(sortByTimeDESC)
-            .sort(sortByStarredASC)
-            ;
-            
-        const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
-
         return `
             <div class="box add-note-box">
                 <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
             </div>
+            
+            ${this.filter ? `
+                <button id="reset-filter-btn"><</button>
+            ` : ''}
+            
+            <div id="tags"></div>
 
-            <ul class="box notes-list-box"> 
-                ${incompleteNotes.map(x => {
-                    return `
-                        <li class="notes-item note">
-                            <div class="headline ${x.completed ? 'completed' : ''}">
-                                <input type="checkbox"
-                                    id="toggle-completed-${x.id}"
-                                    class="toggle-completed"
-                                    data-id="${x.id}"
-                                    ${x.completed ? 'checked' : ''} />
-                                
-                                <label for="toggle-completed-${x.id}">${x.title}</label>
-                            </div>
-                            <div class="controls">
-                                <span class="details">
-                                    ${x.updatedAt ? 
-                                        new Date(x.updatedAt).toLocaleString() :
-                                        new Date(x.createdAt).toLocaleString()
-                                    }
-                                </span>
-                                
-                                <button class="star ${x.starred ? 'starred' : '' }" 
-                                    data-id="${x.id}" 
-                                    aria-label="${x.starred ? 'Unstar' : 'Star' }"
-                                >
-                                    ${x.starred ? '&starf;' : '&star;' }
-                                </button>
-                                
-                                <button class="delete" data-id="${x.id}" aria-label="Delete">&#10005;</button>
-                            </div>
-                        </li>
-                    `;
-                }).join('')} 
-            </ul>
-
-            <ul class="notes-list-box"> 
-                ${completedNotes.map(x => {
-                    return `
-                        <li class="notes-item note">
-                            <div class="headline ${x.completed ? 'completed' : ''}">
-                                <input type="checkbox"
-                                    id="toggle-completed-${x.id}"
-                                    class="toggle-completed"
-                                    data-id="${x.id}"
-                                    ${x.completed ? 'checked' : ''} />
-                                
-                                <label for="toggle-completed-${x.id}">${x.title}</label>
-                                
-                                
-                            </div>
-                            <div class="controls">          
-                                <span class="details">
-                                    ${x.updatedAt ? 
-                                        new Date(x.updatedAt).toLocaleString() :
-                                        new Date(x.createdAt).toLocaleString()
-                                    }
-                                </span>              
-                                <button class="delete-btn" data-id="${x.id}" aria-label="Delete">&#10005;</button>
-                            </div>
-                        </li>
-                    `;
-                }).join('')} 
-            </ul>
-
+            <div id="incomplete-notes"></div>
+            <div id="completed-notes"></div>
+            
             <div id="export-import" class="box"></div>
         `;
     }
@@ -157,67 +158,65 @@ class LayoutView extends AsyncView {
         }
     }
 
-    async deleteNote(event) {
-        if (!window.confirm('Delete note?')) {
-            return;
-        }
-
-        event.preventDefault();
-
-        const el = event.currentTarget;
-        const noteId = el.dataset.id;
-
-        await this.notesAdapter.delete(Number(noteId));
+    async refresh() {
         await this.asyncRender();
     }
 
-    async starNote(event) {
-        event.preventDefault();
-
-        const el = event.currentTarget;
-        const noteId = el.dataset.id;
-
-        const note = await this.getNote(noteId);
-
-        note.starred = !note.starred;
-
-        await this.notesAdapter.put(Number(noteId), note);
-        await this.asyncRender();
+    async resetFilter() {
+        await this.saveFilter(null);
     }
 
-    async toggleCompleted(event) {
-        event.preventDefault();
+    async saveFilter(filter) {
+        this.filter = filter;
 
-        const el = event.currentTarget;
-        const noteId = el.dataset.id;
-
-        const note = await this.getNote(noteId);
-
-        note.completed = !!el.checked;
-
-        await this.notesAdapter.put(Number(noteId), note);
-        await this.asyncRender();
-    }
-
-    async getNote(id) {
-        return await this.notesAdapter.get(Number(id));
+        await this.refresh(filter);
     }
 
     async getNotes() {
-        return await this.notesAdapter.getAll();
+        const allNotes = await this.notesAdapter.getAll();
+
+        if (!this.filter) {
+            return allNotes;
+        }
+
+        let filtered = [];
+
+        if (this.filter.tag) {
+            filtered = allNotes.filter(x => x.title.indexOf('#' + this.filter.tag) > -1);
+        }
+
+        return filtered;
     }
 
     cleanup() {
-        if (this.expImp) {
-            this.expImp.destroy();
-            this.expImp = null;
+        if (this.expImpView) {
+            this.expImpView.destroy();
+            this.expImpView = null;
+        }
+        if (this.completedView) {
+            this.completedView.destroy();
+            this.completedView = null;
+        }
+        if (this.incompleteView) {
+            this.incompleteView.destroy();
+            this.incompleteView = null;
+        }
+        if (this.tagsView) {
+            this.tagsView.destroy();
+            this.tagsView = null;
         }
         super.cleanup();
     }
 
     destroy() {
+        messageBus.unsubscribe('note:updated', this.refresh);
+
+        this.expImpView = null;
+        this.completedView = null;
+        this.incompleteView = null;
+        this.tagsView = null;
+
         super.destroy();
-        this.expImp = null;
     }
 }
 

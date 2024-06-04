@@ -12,8 +12,11 @@ class ExportImportView extends View {
     render() {
         super.render();
 
-        document.getElementById('exporter').addEventListener('click', this.export.bind(this));
-        document.getElementById('importer').addEventListener('change', this.import.bind(this));
+        const exportBtn = document.getElementById('exporter');
+
+        this.subscribeElementEvent(exportBtn, 'click', this.export.bind(this));
+
+        this.subscribeElementEvent(document.getElementById('importer'), 'change', this.import.bind(this));
     }
 
     getHtml() {
@@ -40,8 +43,6 @@ class ExportImportView extends View {
     }
 
     destroy() {
-        document.getElementById('exporter').removeEventListener('click', this.export);
-        document.getElementById('importer').removeEventListener('change', this.import);
         this.importExport = null;
         super.destroy();
     }

@@ -8,7 +8,9 @@ class TagsView extends View {
 
         const tagsEl = this.element.querySelectorAll('.tag-btn');
 
-        tagsEl.forEach(el => el.addEventListener('click', this.filterTag.bind(this) ));
+        tagsEl.forEach(el => {
+            this.subscribeElementEvent(el, 'click', this.filterTag.bind(this));
+        });
     }
 
     getHtml() {
@@ -40,6 +42,11 @@ class TagsView extends View {
 
     getTags() {
         return this.tags;
+    }
+
+    destroy() {
+        this.tags = null;
+        super.destroy();
     }
 }
 

@@ -23,26 +23,26 @@ class NotesView extends View {
 
         const notes = this.getNotes();
 
-        if (!notes.length){
+        if (!notes.length) {
             return;
         }
 
         const deleteBtnEls = this.element.querySelectorAll('.delete');
 
         Array.from(deleteBtnEls).forEach(btn => {
-            btn.addEventListener('click', this.deleteNote.bind(this));
+            this.subscribeElementEvent(btn, 'click', this.deleteNote.bind(this));
         });
 
         const starBtnEls = this.element.querySelectorAll('.star');
 
         Array.from(starBtnEls).forEach(btn => {
-            btn.addEventListener('click', this.starNote.bind(this));
+            this.subscribeElementEvent(btn, 'click', this.starNote.bind(this));
         });
 
         const toggleCompletedEl = this.element.querySelectorAll('.toggle-completed');
 
         Array.from(toggleCompletedEl).forEach(btn => {
-            btn.addEventListener('change', this.toggleCompleted.bind(this));
+            this.subscribeElementEvent(btn, 'change', this.toggleCompleted.bind(this));
         });
     }
 
@@ -177,6 +177,33 @@ class NotesView extends View {
         return await this.notesAdapter.get(Number(id));
     }
 
+    cleanup() {
+        const deleteBtnEls = this.element.querySelectorAll('.delete');
+
+        Array.from(deleteBtnEls).forEach(btn => {
+            btn.removeEventListener('click', this.deleteNote);
+        });
+
+        const starBtnEls = this.element.querySelectorAll('.star');
+
+        Array.from(starBtnEls).forEach(btn => {
+            btn.removeEventListener('click', this.starNote);
+        });
+
+        const toggleCompletedEl = this.element.querySelectorAll('.toggle-completed');
+
+        Array.from(toggleCompletedEl).forEach(btn => {
+            btn.removeEventListener('change', this.toggleCompleted);
+        });
+
+        super.cleanup();
+    }
+
+    destroy() {
+        this.notes = null;
+        this.notesAdapter = null;
+        super.destroy();
+    }
 }
 
 export default NotesView;

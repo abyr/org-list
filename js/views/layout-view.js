@@ -33,7 +33,7 @@ class LayoutView extends AsyncView {
 
         const addNoteEl = document.getElementById('add-note-input');
 
-        addNoteEl.addEventListener('keydown', this.addNote.bind(this));
+        this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
 
         await this.renderTags();
 
@@ -185,6 +185,8 @@ class LayoutView extends AsyncView {
     }
 
     cleanup() {
+        super.cleanup();
+
         if (this.expImpView) {
             this.expImpView.destroy();
             this.expImpView = null;
@@ -201,11 +203,11 @@ class LayoutView extends AsyncView {
             this.tagsView.destroy();
             this.tagsView = null;
         }
-        super.cleanup();
     }
 
     destroy() {
         messageBus.unsubscribe('note:updated', this.refresh);
+        messageBus.unsubscribe('tag:selected', this.saveFilter);
 
         this.expImpView = null;
         this.completedView = null;

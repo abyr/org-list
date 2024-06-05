@@ -49,10 +49,22 @@ button.starred {
     margin: 24px 0;
 }
 
+.flex-box {
+    display: flex;
+}
+
 /**************/
 
 #org-list {
     font-size: 16px;
+}
+
+#lists {
+    height: 100%;
+    width: 300px;
+}
+#notes {
+    width: -webkit-fill-available;
 }
 
 .add-note-box {
@@ -70,9 +82,8 @@ button.starred {
 }
 
 li.tags-item {
-    display: inline-block;
+    line-height: 24px;
 }
-
 li.notes-item {
     width: 100%;
     padding: 8px 0;
@@ -81,7 +92,6 @@ li.notes-item {
 .note {
     display: flex;
 }
-
 .note:hover {
     background-color: var(--main-hover-bg);
 }

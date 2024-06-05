@@ -4,7 +4,7 @@ import ListsStoreAdapter from '../storage-adapters/lists-adapter.js';
 import NotesView from './notes-view.js';
 import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
-import TagsView from './tags-view.js';
+import ListsView from "./lists-view.js";
 import messageBus from '../classes/shared-message-bus.js';
 
 class LayoutView extends AsyncView {
@@ -31,53 +31,31 @@ class LayoutView extends AsyncView {
 
         this.element.innerHTML = await this.getAsyncHtml();
 
-        const addNoteEl = document.getElementById('add-note-input');
-
-        this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
-
-        await this.renderTags();
-
-        if (this.filter) {
-            const resetFilter = document.getElementById('reset-filter-btn');
-
-            resetFilter.addEventListener('click', this.resetFilter.bind(this));
-        }
-
+        await this.renderLists();
         await this.renderIncompleteNotes();
         await this.renderCompletedNotes();
 
         if (!this.filter) {
             this.renderExportImport();
         }
+
+        if (this.filter) {
+            const resetFilter = document.getElementById('reset-filter-btn');
+
+            this.subscribeElementEvent(resetFilter, 'click', this.resetFilter.bind(this));
+        }
+
+        const addNoteEl = document.getElementById('add-note-input');
+
+        this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
     }
 
-    async renderTags() {
-        const notes = await this.getNotes();
-
-        const tags = notes.reduce((res, note) => {
-            const newTags = note.title.split(' ').filter(word=> {
-                const isTag = word.startsWith('#');
-
-                if (!isTag) {
-                    return false;
-                }
-
-                return !res.includes(word);
-            });
-
-            if (newTags) {
-                res = res.concat(newTags);
-            }
-
-            return res;
-        }, ['#focus']).map(x => x.substring(1));
-
-        this.tagsView = new TagsView({
-            element: document.getElementById('tags')
+    async renderLists() {
+        this.listsView = new ListsView({
+            element: document.getElementById('lists')
         });
-
-        this.tagsView.setTags(tags);
-        this.tagsView.render();
+        await this.listsView.init();
+        await this.listsView.asyncRender();
     }
 
     async renderIncompleteNotes() {
@@ -117,18 +95,21 @@ class LayoutView extends AsyncView {
 
     async getAsyncHtml() {
         return `
-            <div class="box add-note-box">
-                <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
+            <div class="flex-box">
+                <div id="lists"></div>
+                <div id="notes">
+                    <div class="box add-note-box">
+                        <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
+                    </div>
+                    
+                    ${this.filter ? `
+                        <button id="reset-filter-btn"> < </button>
+                    ` : ''}
+                    
+                    <div id="incomplete-notes"></div>
+                    <div id="completed-notes"></div>
+                </div>
             </div>
-            
-            ${this.filter ? `
-                <button id="reset-filter-btn"> < </button>
-            ` : ''}
-            
-            <div id="tags"></div>
-
-            <div id="incomplete-notes"></div>
-            <div id="completed-notes"></div>
             
             <div id="export-import" class="box"></div>
         `;
@@ -196,10 +177,6 @@ class LayoutView extends AsyncView {
         if (this.incompleteView) {
             this.incompleteView.destroy();
             this.incompleteView = null;
-        }
-        if (this.tagsView) {
-            this.tagsView.destroy();
-            this.tagsView = null;
         }
     }
 

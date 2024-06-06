@@ -48,21 +48,30 @@ button.starred {
 
 .flex-box-3 {
     display: flex;
-    flex: 1 1 0px;
+    flex: 1 1 0;
     will-change: width;
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
 }
 .flex-box-3-col-1 {
-    z-index: 60;
     display: flex;
     flex-direction: column;
-    width: 50px;
     transition: width 180ms ease;
-
     width: 200px;
 }
+.flex-box-3-col-2 {
+    flex: 1 1 0;
+    display: flex;
+    overflow: hidden;
+}
+.flex-box-3-col-3 {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    width: 360px;
+}
+
 .side-bar {
     display: flex;
     flex-direction: column;
@@ -83,29 +92,11 @@ button.starred {
     overflow: hidden;
     padding-top: 1px;
 }
-.flex-box-3-col-2 {
-    flex: 1 1 0px;
-    display: flex;
-    overflow: hidden;
-}
 .middle-bar {
-    flex: 1 1 0px;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: #f3f2f1;
-    transition: background-color 0.3s;
-}
-.flex-box-3-col-3 {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    transition: width 180ms ease;
-    width: calc(100% - 50px);
-
-    width: calc(100% - 50px);
-
-    width: 360px;
 }
 .last-bar {
     height: 100%;
@@ -128,6 +119,7 @@ button.starred {
     height: 100%;
     width: 300px;
 }
+
 #notes {
     width: -webkit-fill-available;
 }

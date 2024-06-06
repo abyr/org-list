@@ -17,7 +17,7 @@ class TagsView extends View {
         const tags = this.getTags();
 
         return `
-            <ul class="box tags-box list">
+            <ul class="tags-box list">
                 ${tags.map(tag => {
                     return `
                         <li class="tags-item tag">

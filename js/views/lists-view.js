@@ -38,6 +38,7 @@ class ListsView extends AsyncView {
         }];
 
         return `
+            <h2>Lists</h2>
             <ul>
                 ${lists.map(list => {
                     return `
@@ -45,6 +46,8 @@ class ListsView extends AsyncView {
                     `;
                 }).join('')}
             </ul>
+            
+            <h2>Tags</h2>
             
             <div id="tags"></div>
         `;

@@ -95,23 +95,46 @@ class LayoutView extends AsyncView {
 
     async getAsyncHtml() {
         return `
-            <div class="flex-box">
-                <div id="lists"></div>
-                <div id="notes">
-                    <div class="box add-note-box">
-                        <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
+
+            <div class="flex-box-3">
+                <div class="flex-box-3-column-1">
+                    <div class="sidebar">
+                        <div class="sidebar-header">
+                            Orglist user
+                        </div>  
+                        <div class="sidebar-content">
+                        
+                            <div id="lists"></div>
+                            
+                            
+                        </div>
                     </div>
+                </div>
+                <div class="flex-box-3-column-2">
+                    <div class="center-content">
                     
-                    ${this.filter ? `
-                        <button id="reset-filter-btn"> < </button>
-                    ` : ''}
                     
-                    <div id="incomplete-notes"></div>
-                    <div id="completed-notes"></div>
+                        <div id="notes">
+                            <div class="add-note-box">
+                                <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
+                            </div>
+                            
+                            ${this.filter ? `
+                                <button id="reset-filter-btn"> < </button>
+                            ` : ''}
+                            <div id="incomplete-notes"></div>
+                            <div id="completed-notes"></div>
+                        </div>
+                        
+                        
+                    </div>
+                </div>  
+                <div class="flex-box-3-column-3 hidden">
+                    <div class="details-content">flex-box-3-column-3</div>
                 </div>
             </div>
-            
-            <div id="export-import" class="box"></div>
+
+            <div id="export-import"></div>
         `;
     }
 

@@ -97,12 +97,13 @@ class LayoutView extends AsyncView {
         return `
 
             <div class="flex-box-3">
-                <div class="flex-box-3-column-1">
-                    <div class="sidebar">
-                        <div class="sidebar-header">
+                <div class="flex-box-3-col-1">
+                    <div class="side-bar">
+                        <div class="side-bar-header">
                             Orglist user
                         </div>  
-                        <div class="sidebar-content">
+                        <div class="side-bar-content">
+                        
                         
                             <div id="lists"></div>
                             
@@ -110,8 +111,8 @@ class LayoutView extends AsyncView {
                         </div>
                     </div>
                 </div>
-                <div class="flex-box-3-column-2">
-                    <div class="center-content">
+                <div class="flex-box-3-col-2">
+                    <div class="middle-bar">
                     
                     
                         <div id="notes">
@@ -129,8 +130,11 @@ class LayoutView extends AsyncView {
                         
                     </div>
                 </div>  
-                <div class="flex-box-3-column-3 hidden">
-                    <div class="details-content">flex-box-3-column-3</div>
+                <div class="flex-box-3-col-3 hidden">
+                    <div class="last-bar">
+                    
+                    
+                    </div>
                 </div>
             </div>
 

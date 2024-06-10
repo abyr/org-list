@@ -28,32 +28,48 @@ class ListsView extends AsyncView {
         this.element.innerHTML = await this.getAsyncHtml();
 
         await this.renderTags();
+
+        const addNoteEl = document.getElementById('add-list-input');
+
+        this.subscribeElementEvent(addNoteEl, 'keydown', this.addList.bind(this));
     }
 
     async getAsyncHtml() {
-        const lists = [{
-            title: 'All'
+        const staticLists = [{
+            title: '&#10061; All'
         }, {
-            title: 'Starred'
+            title: '&star; Starred'
         }];
+
+        const lists = await this.getLists();
 
         return `
             <h2>Lists</h2>
+            
             <ul>
-                ${lists.map(list => {
+                ${staticLists.map(list => {
                     return `
                         <li>${list.title}</li>
                     `;
                 }).join('')}
             </ul>
             
-            <h2>Tags</h2>
-            
-            <div id="tags" class="box"></div>
+            <ul>
+                ${lists.map(list => {
+                    return `
+                        <li>&#9776; ${list.title}</li>
+                    `;
+                }).join('')}
+            </ul>
             
             <div class="add-list-box box-v16">
                 <input id="add-list-input" class="add-list-input" type="text" placeholder="Add a list..." />
             </div>
+            
+            <h2>Tags</h2>
+            
+            <div id="tags" class="box"></div>
+            
         `;
     }
 
@@ -86,6 +102,30 @@ class ListsView extends AsyncView {
         this.tagsView.render();
     }
 
+    async addList(event) {
+        if (event.key !== "Enter") {
+            return;
+        }
+
+        event.preventDefault();
+
+        const el = event.currentTarget;
+        const text = el.value.trim();
+
+        if (text) {
+            await this.listsAdapter.put(null, {
+                title: text,
+            });
+            await this.asyncRender();
+        }
+    }
+
+    async getLists() {
+        const allLists = await this.listsAdapter.getAll();
+
+        return allLists;
+    }
+
     async getNotes() {
         const allNotes = await this.notesAdapter.getAll();
 
@@ -105,6 +145,7 @@ class ListsView extends AsyncView {
     async saveFilter(filter) {
         this.filter = filter;
     }
+
 }
 
 export default ListsView;

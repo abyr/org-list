@@ -179,9 +179,9 @@ li.notes-item {
     font-size: 12px;
     display: none;
 }
-.note:hover .details {
-    display: inline-block;
-}
+/*.note:hover .details {*/
+/*    display: inline-block;*/
+/*}*/
 
 .note .controls {
     margin-left: auto;

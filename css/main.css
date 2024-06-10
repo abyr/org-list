@@ -1,6 +1,7 @@
 :root {
 
     --main-bg-color: #eeeeee;
+    --main-bg-light-color: #f6f6f6;
     --main-text-color: #252422ff;
     --main-alert-bg: #fec1ba;
     --main-hover-bg: #e1e2e3;
@@ -17,6 +18,10 @@ body.theme-bright {
 body.theme-warm {
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
+}
+body {
+    margin: 0;
+    padding: 0;
 }
 /** End Themes **/
 
@@ -45,6 +50,17 @@ button.starred {
 }
 
 /** frames **/
+
+#org-list {
+    font-size: 16px;
+}
+
+.box-16 {
+    padding: 16px;
+}
+.box-v16 {
+    padding: 16px 0;
+}
 
 .flex-box-3 {
     display: flex;
@@ -90,7 +106,6 @@ button.starred {
     flex-direction: column;
     flex: 1;
     overflow: hidden;
-    padding-top: 1px;
 }
 .middle-bar {
     flex: 1 1 0;
@@ -109,28 +124,32 @@ button.starred {
     flex: 1;
 }
 
-/** domains **/
-
-#org-list {
-    font-size: 16px;
+.middle-bar {
+    background-color: var(--main-bg-light-color);
 }
 
+/** custom **/
+
 #lists {
-    height: 100%;
-    width: 300px;
 }
 
 #notes {
-    width: -webkit-fill-available;
 }
 
-.add-note-box {
-    padding: 16px;
+.add-list-box {
+}
+
+.add-list-box .add-list-input {
+    padding: 0.2em;
     box-sizing: border-box;
+    width: 100%
+}
+.add-note-box {
 }
 .add-note-box .add-note-input {
-    width: 100%;
-    line-height: 24px
+    padding: 0.2em;
+    box-sizing: border-box;
+    width: 100%
 }
 
 .notes-list-box {
@@ -143,7 +162,6 @@ li.tags-item {
 }
 li.notes-item {
     width: 100%;
-    padding: 8px 0;
 }
 
 .note {

@@ -99,7 +99,7 @@ class LayoutView extends AsyncView {
             <div class="flex-box-3">
                 <div class="flex-box-3-col-1">
                 
-                    <div class="side-bar">
+                    <div class="side-bar box-16">
                         <div class="side-bar-header">
                             Orglist
                         </div>  
@@ -110,7 +110,7 @@ class LayoutView extends AsyncView {
                     
                 </div>
                 <div class="flex-box-3-col-2">
-                    <div class="middle-bar">
+                    <div class="middle-bar box-16">
                     
                         <div id="notes">
                             <div class="add-note-box">
@@ -132,8 +132,10 @@ class LayoutView extends AsyncView {
                     </div>
                 </div>
             </div>
-
-            <div id="export-import"></div>
+            
+            <div class="box-16">
+                <div id="export-import"></div>
+            </div>
         `;
     }
 

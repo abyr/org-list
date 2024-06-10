@@ -49,7 +49,11 @@ class ListsView extends AsyncView {
             
             <h2>Tags</h2>
             
-            <div id="tags"></div>
+            <div id="tags" class="box"></div>
+            
+            <div class="add-list-box box-v16">
+                <input id="add-list-input" class="add-list-input" type="text" placeholder="Add a list..." />
+            </div>
         `;
     }
 

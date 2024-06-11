@@ -1,12 +1,11 @@
 :root {
-
     --main-bg-color: #eeeeee;
     --main-bg-light-color: #f6f6f6;
     --main-text-color: #252422ff;
+    --main-text-light-color: #9a9a9a;
     --main-alert-bg: #fec1ba;
     --main-hover-bg: #e1e2e3;
 }
-
 html {
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
@@ -30,14 +29,13 @@ ul, nav {
     margin: 0;
     padding: 0;
 }
-
 ol li {
     list-style-type: none;
     font-size: 1.5em;
     font-weight: bold;
 }
-
 button {
+    font-size: 12px;
     border: 1px solid var(--main-text-color);
     cursor: pointer;
 }
@@ -49,11 +47,11 @@ button.starred {
     font-weight: bold;
 }
 
-/** frames **/
-
 #org-list {
     font-size: 16px;
 }
+
+/* Boxes */
 
 .box-16 {
     padding: 16px;
@@ -61,7 +59,6 @@ button.starred {
 .box-v16 {
     padding: 16px 0;
 }
-
 .flex-box-3 {
     display: flex;
     flex: 1 1 0;
@@ -87,7 +84,6 @@ button.starred {
     flex-direction: row;
     width: 360px;
 }
-
 .side-bar {
     display: flex;
     flex-direction: column;
@@ -123,58 +119,74 @@ button.starred {
     box-sizing: border-box;
     flex: 1;
 }
-
 .middle-bar {
     background-color: var(--main-bg-light-color);
 }
 
-/** custom **/
+/* Collapsible */
 
-#lists {
+.collapsible {
+    margin: 0;
+    padding: 0;
+}
+.collapsible-header {
+    width: 100%;
+    font-size: 16px;
+}
+.collapsible-header:hover {
+    background-color: var(--main-hover-bg);
+}
+.collapsible-trigger {
+    margin: 0;
+    padding: 0;
+}
+.collapsible-content {
+    margin: 0;
+    padding: 0;
+}
+.collapsible-header button {
+    font-size: 1em;
+    border-style: none;
+    background-color: transparent;
+}
+.collapsible-icon::after {
+    content: "\25B2";
+}
+.collapsible-trigger[aria-expanded="true"] .collapsible-icon::after {
+    content: "\25BC";
 }
 
-#notes {
-}
-
-.add-list-box {
-}
+/* Custom */
 
 .add-list-box .add-list-input {
     padding: 0.2em;
     box-sizing: border-box;
     width: 100%
 }
-.add-note-box {
-}
 .add-note-box .add-note-input {
     padding: 0.2em;
     box-sizing: border-box;
     width: 100%
 }
-
 .notes-list-box {
     width: 100%;
     margin: 24px 0;
 }
-
 li.tags-item {
     line-height: 24px;
 }
 li.notes-item {
     width: 100%;
 }
-
 .note {
     display: flex;
 }
 .note:hover {
     background-color: var(--main-hover-bg);
 }
-
 .note .headline {
     flex: 0 1 auto;
 }
-
 .note .details {
     font-size: 12px;
     display: none;
@@ -182,16 +194,18 @@ li.notes-item {
 /*.note:hover .details {*/
 /*    display: inline-block;*/
 /*}*/
-
 .note .controls {
     margin-left: auto;
 }
-
 .note .completed label {
     text-decoration: line-through;
 }
+.note .completed {
+    text-decoration: line-through;
+}
 
-/** Modifiers **/
+/* Modifiers */
+
 .hidden {
     display: none;
 }

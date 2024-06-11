@@ -72,14 +72,24 @@ class LayoutView extends AsyncView {
     }
 
     async renderCompletedNotes() {
-        const notes = await this.getNotes();
-        const completedNotes = notes.filter(x => x.completed).sort(sortByTimeDESC);
+        const notes = await this.getCompletedNotes();
+        const completedNotes = notes.sort(sortByTimeDESC);
+
+        if (!completedNotes.length) {
+            return;
+        }
 
         this.completedView = new NotesView({
             element: document.getElementById('completed-notes')
         });
         this.completedView.setNotes(completedNotes);
         this.completedView.render();
+    }
+
+    async getCompletedNotes() {
+        const notes = await this.getNotes();
+
+        return notes.filter(x => x.completed);
     }
 
     renderExportImport() {
@@ -90,6 +100,8 @@ class LayoutView extends AsyncView {
     }
 
     async getAsyncHtml() {
+        const completedNotes = await this.getCompletedNotes();
+
         return `
 
             <div class="flex-box-3">
@@ -121,28 +133,30 @@ class LayoutView extends AsyncView {
                             ` : ''}
                             <div id="incomplete-notes"></div>
 
-                            <div class="collapsible">
-                                <div class="collapsible-header">
-                                    <button type="button"
-                                        aria-expanded="true"
-                                        class="collapsible-trigger"
-                                        aria-controls="completed-notes-section-toggle"
-                                        id="completed-notes-section"
-                                    >
-                                        <span class="collapsible-title">
-                                            Completed notes
-                                            <span class="collapsible-icon"></span>
-                                        </span>
-                                    </button>
+                            ${completedNotes.length ? `
+                                <div class="collapsible">
+                                    <div class="collapsible-header">
+                                        <button type="button"
+                                            aria-expanded="true"
+                                            class="collapsible-trigger"
+                                            aria-controls="completed-notes-section-toggle"
+                                            id="completed-notes-section"
+                                        >
+                                            <span class="collapsible-title">
+                                                Completed notes
+                                                <span class="collapsible-icon"></span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div id="completed-notes-section-toggle"
+                                         role="region"
+                                         aria-labelledby="completed-notes-section"
+                                         class="collapsible-content">
+    
+                                         <div id="completed-notes"></div>
+                                    </div>
                                 </div>
-                                <div id="completed-notes-section-toggle"
-                                     role="region"
-                                     aria-labelledby="completed-notes-section"
-                                     class="collapsible-content">
-
-                                     <div id="completed-notes"></div>
-                                </div>
-                            </div>
+                            ` : ''}
 
                         </div>
 

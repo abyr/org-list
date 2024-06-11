@@ -42,7 +42,7 @@ class NotesView extends View {
         }
 
         return `
-            <ul class="notes-list-box"> 
+            <ul class="notes-list-box">
                 ${notes.map(x => {
                     
                     const lastDate = x.updatedAt ?

@@ -13,10 +13,10 @@ const schemaList = [{
         fields: [ 'id' ]
     }]
 } , {
-    name: 'preferrences',
+    name: 'preferences',
     keyPath: 'id',
     indexes: [{
-        name: 'preferrenceId',
+        name: 'preferenceId',
         fields: [ 'id' ]
     }]
 }

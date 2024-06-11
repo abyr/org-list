@@ -1,22 +1,10 @@
 import View from '../classes/view.js';
-import NotesStoreAdapter from '../storage-adapters/notes-adapter.js';
+import notesRepository from "../storage/notes-repository.js";
 import messageBus from '../classes/shared-message-bus.js';
 
 const MESSAGE_UPDATED_NAME = 'note:updated';
 
 class NotesView extends View {
-
-    constructor({ element }) {
-        super({ element });
-
-        this.notesAdapter = null;
-    }
-
-    async initAdapters() {
-        this.notesAdapter = new NotesStoreAdapter();
-
-        await this.notesAdapter.connect();
-    }
 
     render() {
         super.render();
@@ -108,11 +96,7 @@ class NotesView extends View {
         const el = event.currentTarget;
         const noteId = el.dataset.id;
 
-        if (!this.notesAdapter) {
-            await this.initAdapters();
-        }
-
-        await this.notesAdapter.delete(Number(noteId));
+        await notesRepository.delete(Number(noteId));
 
         messageBus.publish(MESSAGE_UPDATED_NAME, {
             action: 'delete',
@@ -130,7 +114,7 @@ class NotesView extends View {
 
         note.starred = !note.starred;
 
-        await this.notesAdapter.put(Number(noteId), note);
+        await notesRepository.update(Number(noteId), note);
 
         messageBus.publish(MESSAGE_UPDATED_NAME, {
             action: 'update',
@@ -153,7 +137,7 @@ class NotesView extends View {
 
         note.completed = !!el.checked;
 
-        await this.notesAdapter.put(Number(noteId), note);
+        await notesRepository.update(Number(noteId), note);
 
         messageBus.publish(MESSAGE_UPDATED_NAME, {
             action: 'update',
@@ -170,11 +154,7 @@ class NotesView extends View {
     }
 
     async getNote(id) {
-        if (!this.notesAdapter) {
-            await this.initAdapters();
-        }
-
-        return await this.notesAdapter.get(Number(id));
+        return await notesRepository.get(Number(id));
     }
 
     cleanup() {
@@ -201,7 +181,6 @@ class NotesView extends View {
 
     destroy() {
         this.notes = null;
-        this.notesAdapter = null;
         super.destroy();
     }
 }

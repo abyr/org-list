@@ -5,7 +5,7 @@ import messageBus from '../classes/shared-message-bus.js';
 let instance;
 let listsAdapter;
 
-class ListsRepository extends Repository{
+class ListsRepository extends Repository {
     constructor() {
         if (instance) {
             throw new Error("Instance already exists");

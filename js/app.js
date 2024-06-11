@@ -5,8 +5,6 @@ const onWindowLoad = async () => {
 
     const layout = new LayoutView({ element: appEl });
 
-    await layout.init();
-
     await layout.asyncRender();
 };
 

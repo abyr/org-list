@@ -1,13 +1,11 @@
 import AsyncView from '../classes/async-view.js';
-import NotesStoreAdapter from '../storage-adapters/notes-adapter.js';
-import ListsStoreAdapter from '../storage-adapters/lists-adapter.js';
 import NotesView from './notes-view.js';
 import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
 import messageBus from '../classes/shared-message-bus.js';
 import Collapsible from '../classes/collapsible.js';
-import NotesRepository from '../storage-adapters/notes-repository.js';
+import notesRepository from '../storage/notes-repository.js';
 
 class LayoutView extends AsyncView {
 
@@ -18,16 +16,6 @@ class LayoutView extends AsyncView {
 
         messageBus.subscribe('note:updated', this.refresh.bind(this));
         messageBus.subscribe('tag:selected', this.saveFilter.bind(this));
-    }
-
-    async init() {
-        this.notesAdapter = new NotesStoreAdapter();
-        this.listsAdapter = new ListsStoreAdapter();
-
-        this.notesRepo = NotesRepository;
-
-        await this.notesAdapter.connect();
-        await this.listsAdapter.connect();
     }
 
     async asyncRender() {
@@ -63,7 +51,6 @@ class LayoutView extends AsyncView {
         this.listsView = new ListsView({
             element: document.getElementById('lists')
         });
-        await this.listsView.init();
         await this.listsView.asyncRender();
     }
 
@@ -137,10 +124,11 @@ class LayoutView extends AsyncView {
                             <div class="collapsible">
                                 <div class="collapsible-header">
                                     <button type="button"
-                                            aria-expanded="false"
-                                            class="collapsible-trigger"
-                                            aria-controls="completed-notes-section-toggle"
-                                            id="completed-notes-section">
+                                        aria-expanded="true"
+                                        class="collapsible-trigger"
+                                        aria-controls="completed-notes-section-toggle"
+                                        id="completed-notes-section"
+                                    >
                                         <span class="collapsible-title">
                                             Completed notes
                                             <span class="collapsible-icon"></span>
@@ -184,7 +172,7 @@ class LayoutView extends AsyncView {
         const text = el.value.trim();
 
         if (text) {
-            await this.notesAdapter.put(null, {
+            await notesRepository.create({
                 title: text,
             });
             await this.asyncRender();
@@ -206,7 +194,7 @@ class LayoutView extends AsyncView {
     }
 
     async getNotes() {
-        const allNotes = await this.notesRepo.getAll();
+        const allNotes = await notesRepository.getAll();
 
         if (!this.filter) {
             return allNotes;

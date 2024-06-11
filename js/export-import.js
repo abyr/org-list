@@ -1,4 +1,4 @@
-import NotesStoreAdapter from './storage-adapters/notes-adapter.js';
+import NotesStoreAdapter from './storage/notes-adapter.js';
 
 class ExportImport {
 

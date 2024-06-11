@@ -6,6 +6,7 @@ import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
 import messageBus from '../classes/shared-message-bus.js';
+import Collapsible from '../classes/collapsible.js';
 
 class LayoutView extends AsyncView {
 
@@ -38,6 +39,11 @@ class LayoutView extends AsyncView {
         if (!this.filter) {
             this.renderExportImport();
         }
+
+        const collapsibleList = document.querySelectorAll('.collapsible-header');
+
+        collapsibleList &&
+            collapsibleList.forEach(el => new Collapsible(el));
 
         if (this.filter) {
             const resetFilter = document.getElementById('reset-filter-btn');
@@ -98,41 +104,63 @@ class LayoutView extends AsyncView {
 
             <div class="flex-box-3">
                 <div class="flex-box-3-col-1">
-                
+
                     <div class="side-bar box-16">
                         <div class="side-bar-header">
                             Orglist
-                        </div>  
+                        </div>
                         <div class="side-bar-content">
                             <div id="lists"></div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="flex-box-3-col-2">
                     <div class="middle-bar box-16">
-                    
+
                         <div id="notes">
                             <div class="add-note-box">
                                 <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
                             </div>
-                            
+
                             ${this.filter ? `
                                 <button id="reset-filter-btn"> < </button>
                             ` : ''}
                             <div id="incomplete-notes"></div>
-                            <div id="completed-notes"></div>
+
+                            <div class="collapsible">
+                                <div class="collapsible-header">
+                                    <button type="button"
+                                            aria-expanded="false"
+                                            class="collapsible-trigger"
+                                            aria-controls="completed-notes-section-toggle"
+                                            id="completed-notes-section">
+                                        <span class="collapsible-title">
+                                            Completed notes
+                                            <span class="collapsible-icon"></span>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div id="completed-notes-section-toggle"
+                                     role="region"
+                                     aria-labelledby="completed-notes-section"
+                                     class="collapsible-content">
+
+                                     <div id="completed-notes"></div>
+                                </div>
+                            </div>
+
                         </div>
-                        
+
                     </div>
-                </div>  
+                </div>
                 <div class="flex-box-3-col-3 hidden">
                     <div class="last-bar">
-                        
+
                     </div>
                 </div>
             </div>
-            
+
             <div class="box-16">
                 <div id="export-import"></div>
             </div>
@@ -220,7 +248,7 @@ class LayoutView extends AsyncView {
 function sortByTimeDESC (a, b) {
     const aTime = a.updatedAt || a.createdAt;
     const bTime = b.updatedAt || b.createdAt;
-    
+
     return bTime - aTime;
 }
 

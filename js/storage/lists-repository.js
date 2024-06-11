@@ -18,7 +18,7 @@ class ListsRepository extends Repository {
         listsAdapter = new ListsStoreAdapter();
         this.setAdapter(listsAdapter);
 
-        messageBus.subscribe('list:updated', this.invalidateCache.bind(this));
+        messageBus.subscribe('list:updated', this.invalidateCacheData.bind(this));
     }
 }
 

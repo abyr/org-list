@@ -56,12 +56,13 @@ class Repository {
         return res;
     }
 
-    invalidateCache(key) {
-        if (key) {
-            this.cacheMap[key] = null;
-            return;
+    invalidateCacheData(data) {
+        if (data && data.id) {
+            this.cacheMap[data.id] = null;
         }
+    }
 
+    invalidateCache() {
         Object.keys(this.cacheMap).forEach(key => {
             this.cacheMap[key] = null;
         });

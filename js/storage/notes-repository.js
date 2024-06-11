@@ -20,7 +20,7 @@ class NotesRepository extends Repository {
 
         this.setAdapter(notesAdapter);
 
-        messageBus.subscribe('note:updated', this.invalidateCache.bind(this));
+        messageBus.subscribe('note:updated', this.invalidateCacheData.bind(this));
     }
 
 }

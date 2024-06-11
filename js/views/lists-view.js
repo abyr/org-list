@@ -2,6 +2,7 @@ import AsyncView from "../classes/async-view.js";
 import TagsView from './tags-view.js';
 import NotesStoreAdapter from "../storage-adapters/notes-adapter.js";
 import ListsStoreAdapter from "../storage-adapters/lists-adapter.js";
+import NotesRepository from '../storage-adapters/notes-repository.js';
 import messageBus from "../classes/shared-message-bus.js";
 
 class ListsView extends AsyncView {
@@ -20,6 +21,8 @@ class ListsView extends AsyncView {
 
         await this.notesAdapter.connect();
         await this.listsAdapter.connect();
+
+        this.notesRepo = NotesRepository;
     }
 
     async asyncRender() {
@@ -127,7 +130,7 @@ class ListsView extends AsyncView {
     }
 
     async getNotes() {
-        const allNotes = await this.notesAdapter.getAll();
+        const allNotes = await this.notesRepo.getAll();
 
         if (!this.filter) {
             return allNotes;

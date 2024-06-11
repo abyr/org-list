@@ -7,6 +7,7 @@ import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
 import messageBus from '../classes/shared-message-bus.js';
 import Collapsible from '../classes/collapsible.js';
+import NotesRepository from '../storage-adapters/notes-repository.js';
 
 class LayoutView extends AsyncView {
 
@@ -22,6 +23,8 @@ class LayoutView extends AsyncView {
     async init() {
         this.notesAdapter = new NotesStoreAdapter();
         this.listsAdapter = new ListsStoreAdapter();
+
+        this.notesRepo = NotesRepository;
 
         await this.notesAdapter.connect();
         await this.listsAdapter.connect();
@@ -120,7 +123,10 @@ class LayoutView extends AsyncView {
 
                         <div id="notes">
                             <div class="add-note-box">
-                                <input id="add-note-input" class="add-note-input" type="text" placeholder="Add a note..." />
+                                <input id="add-note-input" 
+                                       class="add-note-input" 
+                                       type="text" 
+                                       placeholder="Add a note..." />
                             </div>
 
                             ${this.filter ? `
@@ -200,7 +206,7 @@ class LayoutView extends AsyncView {
     }
 
     async getNotes() {
-        const allNotes = await this.notesAdapter.getAll();
+        const allNotes = await this.notesRepo.getAll();
 
         if (!this.filter) {
             return allNotes;

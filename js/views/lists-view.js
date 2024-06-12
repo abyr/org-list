@@ -117,19 +117,9 @@ class ListsView extends AsyncView {
     }
 
     async getNotes() {
-        const allNotes = await notesRepository.getAll();
-
-        if (!this.filter) {
-            return allNotes;
-        }
-
-        let filtered = [];
-
-        if (this.filter.tag) {
-            filtered = allNotes.filter(x => x.title.indexOf('#' + this.filter.tag) > -1);
-        }
-
-        return filtered;
+        return await notesRepository.getNotes({
+            filter: this.filter
+        });
     }
 
     async saveFilter(filter) {

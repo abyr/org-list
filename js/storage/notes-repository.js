@@ -23,6 +23,22 @@ class NotesRepository extends Repository {
         messageBus.subscribe('note:updated', this.invalidateCacheData.bind(this));
     }
 
+    async getNotes({ filter }) {
+        const allNotes = await this.getAll();
+
+        if (!filter) {
+            return allNotes;
+        }
+
+        let filtered = [];
+
+        if (filter.tag) {
+            filtered = allNotes.filter(x => x.title.indexOf('#' + filter.tag) > -1);
+        }
+
+        return filtered;
+    }
+
 }
 
 let notesRepositoryInstance = Object.freeze(new NotesRepository());

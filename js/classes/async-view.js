@@ -6,9 +6,7 @@ import View from './view.js';
 class AsyncView extends View {
 
     async asyncRender() {
-        const html = await this.getAsyncHtml();
-
-        this.element.innerHTML = html;
+        this.element.innerHTML = await this.getAsyncHtml();
     }
 
     getAsyncHtml() {

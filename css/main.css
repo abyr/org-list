@@ -108,6 +108,7 @@ button.starred {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background-color: var(--main-bg-light-color);
 }
 .last-bar {
     height: 100%;
@@ -118,9 +119,6 @@ button.starred {
     width: 360px;
     box-sizing: border-box;
     flex: 1;
-}
-.middle-bar {
-    background-color: var(--main-bg-light-color);
 }
 
 /* Collapsible */

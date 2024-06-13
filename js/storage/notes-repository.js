@@ -23,17 +23,21 @@ class NotesRepository extends Repository {
         messageBus.subscribe('note:updated', this.invalidateCacheData.bind(this));
     }
 
-    async getNotes({ filter }) {
+    /**
+     * @param {String} text
+     * @returns {Promise<Repository.adapter.getAll|*[]>}
+     */
+    async search({ text }) {
         const allNotes = await this.getAll();
 
-        if (!filter) {
+        if (!text) {
             return allNotes;
         }
 
         let filtered = [];
 
-        if (filter.tag) {
-            filtered = allNotes.filter(x => x.title.indexOf('#' + filter.tag) > -1);
+        if (text) {
+            filtered = allNotes.filter(x => x.title.indexOf(text) > -1);
         }
 
         return filtered;

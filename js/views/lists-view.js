@@ -117,8 +117,10 @@ class ListsView extends AsyncView {
     }
 
     async getNotes() {
-        return await notesRepository.getNotes({
-            filter: this.filter
+        return await notesRepository.search({
+            text: this.filter ?
+                '#' + this.filter.tag :
+                ''
         });
     }
 

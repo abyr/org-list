@@ -4,7 +4,7 @@ import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
 import messageBus from '../classes/shared-message-bus.js';
-import Collapsible from '../classes/collapsible.js';
+import Collapsible from './components/collapsible.js';
 import notesRepository from '../storage/notes-repository.js';
 
 class LayoutView extends AsyncView {

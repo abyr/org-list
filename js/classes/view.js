@@ -23,10 +23,16 @@ class View {
 
     render() {
         this.element.innerHTML = this.getHtml();
+
+        this.applyEvents();
     }
 
     getHtml() {
         return `<div data-view-id="${this.getUid()}"></div>`;
+    }
+
+    applyEvents() {
+
     }
 
     destroy() {

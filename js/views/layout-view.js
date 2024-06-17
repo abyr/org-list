@@ -6,6 +6,7 @@ import ListsView from "./lists-view.js";
 import messageBus from '../classes/shared-message-bus.js';
 import Collapsible from './components/collapsible.js';
 import notesRepository from '../storage/notes-repository.js';
+import ContextMenu from "./components/context-menu.js";
 
 class LayoutView extends AsyncView {
 
@@ -45,6 +46,8 @@ class LayoutView extends AsyncView {
         const addNoteEl = document.getElementById('add-note-input');
 
         this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
+
+        new ContextMenu({ element: document.querySelector('.side-bar-header') });
     }
 
     async renderLists() {

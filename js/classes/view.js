@@ -3,7 +3,7 @@ import sharedState from "./shared-state.js";
 const SHARED_VIEW_IDX_NAME = 'view-index';
 
 /**
- * Uses element as parent element for rendering
+ * @param {Element} element View class uses element as parent element for rendering
  */
 class View {
     constructor({ element }) {

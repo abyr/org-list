@@ -99,7 +99,7 @@ class NoteView extends View {
         const el = event.currentTarget;
         const noteId = el.dataset.id;
 
-        const note = await this.getNote(noteId);
+        const note = await notesRepository.get(Number(noteId));
 
         note.starred = !note.starred;
 
@@ -122,7 +122,7 @@ class NoteView extends View {
             return;
         }
 
-        const note = await this.getNote(noteId);
+        const note = await notesRepository.get(Number(noteId));
 
         note.completed = !!el.checked;
 

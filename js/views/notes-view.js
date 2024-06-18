@@ -1,5 +1,4 @@
 import View from '../classes/view.js';
-import notesRepository from "../storage/notes-repository.js";
 import NoteView from './note-view.js';
 
 class NotesView extends View {

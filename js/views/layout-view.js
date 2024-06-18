@@ -7,6 +7,7 @@ import messageBus from '../classes/shared-message-bus.js';
 import Collapsible from './components/collapsible.js';
 import notesRepository from '../storage/notes-repository.js';
 import ContextMenu from "./components/context-menu.js";
+import LastBarView from "./last-bar-view.js";
 
 class LayoutView extends AsyncView {
 
@@ -24,6 +25,7 @@ class LayoutView extends AsyncView {
 
         this.element.innerHTML = await this.getAsyncHtml();
 
+        await this.renderLastBar();
         await this.renderLists();
         await this.renderIncompleteNotes();
         await this.renderCompletedNotes();
@@ -34,8 +36,9 @@ class LayoutView extends AsyncView {
 
         const collapsibleList = document.querySelectorAll('.collapsible-header');
 
-        collapsibleList &&
+        if (collapsibleList) {
             collapsibleList.forEach(el => new Collapsible(el));
+        }
 
         if (this.filter) {
             const resetFilter = document.getElementById('reset-filter-btn');
@@ -48,6 +51,16 @@ class LayoutView extends AsyncView {
         this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
 
         new ContextMenu({ element: document.querySelector('.side-bar-header') });
+    }
+
+    async renderLastBar() {
+        const lastBarEl = this.element.querySelector('.last-bar');
+
+        const lastBarView = new LastBarView({ element: lastBarEl });
+
+        lastBarView.render();
+
+        this.lastBarView = lastBarView;
     }
 
     async renderLists() {
@@ -166,7 +179,7 @@ class LayoutView extends AsyncView {
                     </div>
                 </div>
                 <div class="flex-box-3-col-3 hidden">
-                    <div class="last-bar">
+                    <div class="last-bar box-16">
 
                     </div>
                 </div>
@@ -243,6 +256,7 @@ class LayoutView extends AsyncView {
         this.completedView = null;
         this.incompleteView = null;
         this.tagsView = null;
+        this.lastBarView = null;
 
         super.destroy();
     }

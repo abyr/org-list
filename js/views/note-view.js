@@ -7,8 +7,6 @@ const MESSAGE_UPDATED_NAME = 'note:updated';
 class NoteView extends View {
 
     getHtml() {
-        const note = this.getNote();
-
         const lastDate = this.getReadableLastDate();
 
         const starBtn = !this.note.completed ? `
@@ -29,7 +27,10 @@ class NoteView extends View {
                         data-id="${this.note.id}"
                         ${this.note.completed ? 'checked' : ''} />
 
-                    <span id="toggle-completed-${this.note.id}" class="headline-text">${this.note.title}</span>
+                    <span class="headline-text"
+                        id="toggle-completed-${this.note.id}" 
+                        data-id="${this.note.id}"
+                    >${this.note.title}</span>
                 </div>
 
                 <div class="controls">
@@ -59,6 +60,10 @@ class NoteView extends View {
         Array.from(toggleCompletedEl).forEach(btn => {
             this.subscribeElementEvent(btn, 'change', this.toggleCompleted.bind(this));
         });
+
+        this.subscribeElementEvent(this.element.querySelector('.headline-text'), 'click', this.openNote.bind(this))
+
+
     }
 
     getReadableLastDate() {
@@ -132,6 +137,17 @@ class NoteView extends View {
             action: 'update',
             id: noteId,
         });
+    }
+
+    openNote() {
+        const el = event.currentTarget;
+        const noteId = el.dataset.id;
+
+        if (!noteId) {
+            return;
+        }
+
+        messageBus.publish('note:opened', { id: noteId });
     }
 
 }

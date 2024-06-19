@@ -1,4 +1,5 @@
 import View from "../classes/view.js";
+import NoteDetailsView from './note-details-view.js';
 import messageBus from "../classes/shared-message-bus.js";
 import notesRepository from "../storage/notes-repository.js";
 
@@ -10,20 +11,27 @@ class LastBarView extends View {
         messageBus.subscribe('note:opened', this.renderNoteDetails.bind(this));
     }
 
-    getHtml() {
-        if (!this.note) {
-            return ``;
+    render() {
+        this.element.innerHTML = this.getHtml();
+
+        if (this.note) {
+            this.noteDetailsView = new NoteDetailsView({
+                element:  this.element.querySelector('.last-bar-content')
+            });
+
+            this.noteDetailsView.setNote(this.note);
+            this.noteDetailsView.render();
         }
 
-        const note = this.note;
+        this.applyEvents();
+    }
 
+    getHtml() {
         return `
             <div>
                 <button class="close" aria-label="Close">&#10005;</button>
             </div>
-            <div class="box-v16">
-                <div>${note.title}</div>
-            </div>
+            <div class="box-v16 last-bar-content"></div>
         `;
     }
 

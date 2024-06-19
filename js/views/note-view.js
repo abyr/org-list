@@ -2,8 +2,6 @@ import View from "../classes/view.js";
 import notesRepository from "../storage/notes-repository.js";
 import messageBus from '../classes/shared-message-bus.js';
 
-const MESSAGE_UPDATED_NAME = 'note:updated';
-
 class NoteView extends View {
 
     getHtml() {
@@ -22,13 +20,14 @@ class NoteView extends View {
             <li class="notes-item note">
                 <div class="headline ${this.note.completed ? 'completed' : ''}">
                     <input type="checkbox"
+                        aria-labelledby="toggle-completed-${this.note.id}-label"
                         id="toggle-completed-${this.note.id}"
                         class="toggle-completed"
                         data-id="${this.note.id}"
                         ${this.note.completed ? 'checked' : ''} />
 
                     <span class="headline-text"
-                        id="toggle-completed-${this.note.id}" 
+                        id="toggle-completed-${this.note.id}-label" 
                         data-id="${this.note.id}"
                     >${this.note.title}</span>
                 </div>
@@ -92,7 +91,7 @@ class NoteView extends View {
 
         await notesRepository.delete(Number(noteId));
 
-        messageBus.publish(MESSAGE_UPDATED_NAME, {
+        messageBus.publish('note:updated', {
             action: 'delete',
             id: noteId,
         });
@@ -110,7 +109,7 @@ class NoteView extends View {
 
         await notesRepository.update(Number(noteId), note);
 
-        messageBus.publish(MESSAGE_UPDATED_NAME, {
+        messageBus.publish('note:updated', {
             action: 'update',
             id: noteId,
         });
@@ -133,7 +132,7 @@ class NoteView extends View {
 
         await notesRepository.update(Number(noteId), note);
 
-        messageBus.publish(MESSAGE_UPDATED_NAME, {
+        messageBus.publish('note:updated', {
             action: 'update',
             id: noteId,
         });

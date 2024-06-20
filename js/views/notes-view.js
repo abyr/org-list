@@ -3,9 +3,7 @@ import NoteView from './note-view.js';
 
 class NotesView extends View {
 
-    render() {
-        super.render();
-
+    postRender() {
         const notes = this.getNotes();
 
         notes.forEach(x => {

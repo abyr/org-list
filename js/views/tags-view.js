@@ -3,9 +3,7 @@ import messageBus from '../classes/shared-message-bus.js';
 
 class TagsView extends View {
 
-    render() {
-        super.render();
-
+    applyEvents() {
         const tagsEl = this.element.querySelectorAll('.tag-btn');
 
         tagsEl.forEach(el => {

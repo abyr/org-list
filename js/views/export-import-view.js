@@ -9,9 +9,7 @@ class ExportImportView extends View {
         this.importExport = new ExportImport();
     }
 
-    render() {
-        super.render();
-
+    applyEvents() {
         const exportBtn = document.getElementById('exporter');
 
         this.subscribeElementEvent(exportBtn, 'click', this.export.bind(this));

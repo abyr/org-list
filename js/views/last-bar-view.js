@@ -11,9 +11,7 @@ class LastBarView extends View {
         messageBus.subscribe('note:opened', this.renderNoteDetails.bind(this));
     }
 
-    render() {
-        this.element.innerHTML = this.getHtml();
-
+    postRender() {
         if (this.note) {
             this.noteDetailsView = new NoteDetailsView({
                 element:  this.element.querySelector('.last-bar-content')
@@ -22,8 +20,6 @@ class LastBarView extends View {
             this.noteDetailsView.setNote(this.note);
             this.noteDetailsView.render();
         }
-
-        this.applyEvents();
     }
 
     getHtml() {

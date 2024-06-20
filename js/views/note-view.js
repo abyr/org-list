@@ -61,8 +61,6 @@ class NoteView extends View {
         });
 
         this.subscribeElementEvent(this.element.querySelector('.headline-text'), 'click', this.openNote.bind(this))
-
-
     }
 
     getReadableLastDate() {

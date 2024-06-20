@@ -24,7 +24,13 @@ class View {
     render() {
         this.element.innerHTML = this.getHtml();
 
+        this.postRender();
+
         this.applyEvents();
+    }
+
+    postRender() {
+
     }
 
     getHtml() {

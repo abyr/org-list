@@ -15,12 +15,14 @@ class Repository {
     }
 
     async get(id) {
-        if (!this.cacheMap[id]) {
+        const numId = Number(id);
+
+        if (!this.cacheMap[numId]) {
             await this.init();
-            this.cacheMap[id] = await this.adapter.get(Number(id));
+            this.cacheMap[numId] = await this.adapter.get(numId);
         }
 
-        return this.cacheMap[id];
+        return this.cacheMap[numId];
     }
 
     async getAll() {
@@ -44,7 +46,6 @@ class Repository {
         const res = await this.adapter.put(Number(id), data);
 
         this.invalidateCache();
-
         return res;
     }
 
@@ -64,7 +65,11 @@ class Repository {
 
     invalidateCache() {
         Object.keys(this.cacheMap).forEach(id => {
-            this.cacheMap[id] = null;
+            if (id === 'all') {
+                this.cacheMap[id] = null;
+            } else {
+                delete this.cacheMap[Number(id)];
+            }
         });
     }
 }

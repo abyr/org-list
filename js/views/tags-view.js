@@ -19,7 +19,7 @@ class TagsView extends View {
                 ${tags.map(tag => {
                     return `
                         <li class="tags-item tag">
-                            <button class="tag-btn" data-tag="${tag}">${tag}</button>
+                            #<button class="tag-btn" data-tag="${tag}">${tag}</button>
                         </li>
                     `;
                 }).join('')}

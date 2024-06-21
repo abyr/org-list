@@ -19,6 +19,7 @@ class LayoutView extends AsyncView {
 
         messageBus.subscribe('note:updated', this.refresh.bind(this));
         messageBus.subscribe('tag:selected', this.saveFilter.bind(this));
+        messageBus.subscribe('list:selected', this.showList.bind(this));
     }
 
     async asyncRender() {
@@ -41,7 +42,7 @@ class LayoutView extends AsyncView {
             collapsibleList.forEach(el => new Collapsible(el));
         }
 
-        if (this.filter) {
+        if (this.filter || this.list) {
             const resetFilter = document.getElementById('reset-filter-btn');
 
             this.subscribeElementEvent(resetFilter, 'click', this.resetFilter.bind(this));
@@ -222,8 +223,19 @@ class LayoutView extends AsyncView {
                                        placeholder="Add a note..." />
                             </div>
 
-                            ${this.filter ? `
-                                <button id="reset-filter-btn"> < </button>
+                            ${(this.filter || this.list) ? `
+                                <div class="box-v16">
+                                    </div><button id="reset-filter-btn"> < </button>
+                                    ${this.filter && this.filter.tag ? `
+                                        <span># ${this.filter.tag}</span>                                   
+                                    ` : '' }
+                                    ${this.list ? `
+                                        <span class="list-title" 
+                                            data-id="${this.list.id}" 
+                                            contenteditable="true"
+                                        >${this.list.title}</span>
+                                    ` : '' }
+                                </div>
                             ` : ''}
                             <div id="incomplete-notes"></div>
 
@@ -296,12 +308,40 @@ class LayoutView extends AsyncView {
     }
 
     async saveFilter(filter) {
+        this.notes = null;
+        this.list = null;
+
         this.filter = filter;
 
-        await this.refresh(filter);
+        await this.refresh();
+    }
+
+    async showList({ id }){
+        this.filter = null;
+
+        const list = await listsRepository.get(id);
+        const notesIds = list.notes;
+
+        const allNotes = await notesRepository.getAll();
+
+        const notes = allNotes.reduce((res, note) => {
+            if (notesIds.includes(+note.id)) {
+                res.push(note);
+            }
+
+            return res;
+        }, []);
+
+        this.list = list;
+        this.notes = notes;
+
+        await this.refresh();
     }
 
     async getNotes() {
+        if (this.notes) {
+            return this.notes;
+        }
         return await notesRepository.search({
             text: this.filter ?
                 '#' + this.filter.tag :
@@ -329,6 +369,7 @@ class LayoutView extends AsyncView {
     destroy() {
         messageBus.unsubscribe('note:updated', this.refresh);
         messageBus.unsubscribe('tag:selected', this.saveFilter);
+        messageBus.unsubscribe('list:selected', this.showList);
 
         this.expImpView = null;
         this.completedView = null;

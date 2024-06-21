@@ -21,7 +21,7 @@ class ListsStoreAdapter extends CacheableAdapter {
      * 
      * @returns {Promise}
      */
-    put(id, { title, notes, sortBy, orderBy, completed, createdAt, updatedAt }) {
+    put(id, { title, notes = [], sortBy, orderBy, completed, createdAt, updatedAt }) {
         return new Promise((resolve, reject) => {
 
             this.invalidateCache();

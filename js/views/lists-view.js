@@ -24,6 +24,16 @@ class ListsView extends AsyncView {
         const addNoteEl = document.getElementById('add-list-input');
 
         this.subscribeElementEvent(addNoteEl, 'keydown', this.addList.bind(this));
+
+        const listItems = this.element.querySelectorAll('.list-item');
+
+        listItems.forEach(x => {
+            this.subscribeElementEvent(x, 'click', this.selectList.bind(this))
+        });
+    }
+
+    async selectList(event) {
+        messageBus.publish('list:selected', { id: +event.currentTarget.dataset.id });
     }
 
     async getAsyncHtml() {
@@ -49,8 +59,8 @@ class ListsView extends AsyncView {
             <ul>
                 ${lists.map(list => {
                     return `
-                        <li class="flex-box-3" data-id="${list.id}">
-                            <span>&#9776; ${list.title}</span> 
+                        <li class="flex-box-3 list-item" data-id="${list.id}">
+                            <span>&#9776; ${list.title}</span>
                             <span class="flex-box-3-push counter">
                                 ${list.notes && list.notes.length ? list.notes.length : ''}
                             </span>
@@ -109,6 +119,7 @@ class ListsView extends AsyncView {
         if (text) {
             await listsRepository.create({
                 title: text,
+                notes: [],
             });
             await this.asyncRender();
         }
@@ -119,6 +130,9 @@ class ListsView extends AsyncView {
     }
 
     async getNotes() {
+        if (this.notes) {
+            return this.notes;
+        }
         return await notesRepository.search({
             text: this.filter ?
                 '#' + this.filter.tag :

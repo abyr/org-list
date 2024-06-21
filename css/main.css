@@ -40,7 +40,7 @@ ul li {
     font-size: 1rem;
 }
 button {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     border: 1px solid var(--main-text-color);
     cursor: pointer;
 }
@@ -222,13 +222,6 @@ li.notes-item {
     text-decoration: line-through;
 }
 
-#incomplete-notes li {
-    padding: 0.2em 0;
-}
-
-#lists li {
-    padding: 0.2em 0;
-}
 
 .counter {
     color: var(--main-text-light-color);

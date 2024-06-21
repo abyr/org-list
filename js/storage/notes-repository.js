@@ -25,9 +25,10 @@ class NotesRepository extends Repository {
 
     /**
      * @param {String} text
+     * @param {Array} ids
      * @returns {Promise<Repository.adapter.getAll|*[]>}
      */
-    async search({ text }) {
+    async search({ text, ids }) {
         const allNotes = await this.getAll();
 
         if (!text) {

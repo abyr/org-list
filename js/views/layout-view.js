@@ -8,6 +8,7 @@ import Collapsible from './components/collapsible.js';
 import notesRepository from '../storage/notes-repository.js';
 import ContextMenu from "./components/context-menu.js";
 import LastBarView from "./last-bar-view.js";
+import listsRepository from "../storage/lists-repository.js";
 
 class LayoutView extends AsyncView {
 
@@ -64,10 +65,19 @@ class LayoutView extends AsyncView {
     }
 
     async renderLists() {
+        const listsEl = document.getElementById('lists');
+
         this.listsView = new ListsView({
-            element: document.getElementById('lists')
+            element: listsEl
         });
         await this.listsView.asyncRender();
+
+        const dropEls = listsEl.querySelectorAll('li');
+
+        dropEls.forEach(el => {
+            this.subscribeElementEvent(el, 'dragover', this.dragOver.bind(this));
+            this.subscribeElementEvent(el, 'drop', this.dragDrop.bind(this));
+        });
     }
 
     async renderIncompleteNotes() {
@@ -80,11 +90,79 @@ class LayoutView extends AsyncView {
             .sort(sortByStarredASC)
         ;
 
+        const incompleteEl = document.getElementById('incomplete-notes');
+
         this.incompleteView = new IncompleteNotesView({
-            element: document.getElementById('incomplete-notes')
+            element: incompleteEl
         });
         this.incompleteView.setNotes(sortedNotes);
         this.incompleteView.render();
+
+        const draggableEls = incompleteEl.querySelectorAll('[draggable="true"]');
+
+        draggableEls.forEach(el => {
+            this.subscribeElementEvent(el, 'dragstart', this.dragStart.bind(this));
+            this.subscribeElementEvent(el, 'dragend', this.dragEnd.bind(this));
+        });
+    }
+
+    dragStart(event) {
+        const el = event.currentTarget;
+
+        this.dragNoteId = +el.dataset.id;
+
+        setTimeout(() => {
+            el.classList.add('blurred');
+        }, 0);
+    }
+
+    dragEnd(event) {
+        const el = event.currentTarget;
+        
+        setTimeout(() => {
+            el.classList.remove('blurred');
+        }, 0);
+    }
+    
+
+    dragOver(event) {
+        event.preventDefault();
+    }
+
+    async dragDrop(event) {
+        const el = event.currentTarget;
+
+        this.dragToListId = +el.dataset.id;
+
+        const lists = await listsRepository.getAll();
+
+        const list = await listsRepository.get(this.dragToListId);
+
+        for (const x of lists) {
+            const index = x.notes && x.notes.indexOf(this.dragNoteId);
+
+            if (index > -1) {
+                x.notes.splice(index, 1);
+                await listsRepository.update(x.id, x);
+            }
+        }
+
+        if (list.notes) {
+            if (list.notes.includes(this.dragNoteId)) {
+                return
+            }
+
+            list.notes.push(this.dragNoteId);
+        } else {
+            list.notes = [this.dragNoteId];
+        }
+
+        await listsRepository.update(this.dragToListId, list);
+
+        this.dragNoteId = null;
+        this.dragToListId = null;
+
+        await this.refresh();
     }
 
     async renderCompletedNotes() {

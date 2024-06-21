@@ -3,7 +3,7 @@ import NotesView from "./notes-view.js";
 class IncompleteNotesView extends NotesView {
 
     getEmptyHtml() {
-        return `Nothing to do.`;
+        return `<div class="box-v16">Nothing to do.</div>`;
     }
 }
 

@@ -49,19 +49,21 @@ class ListsView extends AsyncView {
             <ul>
                 ${lists.map(list => {
                     return `
-                        <li>&#9776; ${list.title}</li>
+                        <li class="flex-box-3" data-id="${list.id}">
+                            <span>&#9776; ${list.title}</span> 
+                            <span class="flex-box-3-push counter">
+                                ${list.notes && list.notes.length ? list.notes.length : ''}
+                            </span>
+                        </li>
                     `;
                 }).join('')}
             </ul>
             
-            <div class="add-list-box box-v16">
+            <div class="add-list-box box-top16 hidden">
                 <input id="add-list-input" class="add-list-input" type="text" placeholder="Add a list..." />
             </div>
             
-            <h2>Tags</h2>
-            
-            <div id="tags" class="box"></div>
-            
+            <div id="tags" class="box box-v16"></div>
         `;
     }
 

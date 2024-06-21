@@ -26,14 +26,14 @@ class NoteView extends View {
                         data-id="${this.note.id}"
                         ${this.note.completed ? 'checked' : ''} />
 
-                    <span class="headline-text"
+                    <span class="headline-text" 
+                        draggable="true"
                         id="toggle-completed-${this.note.id}-label" 
                         data-id="${this.note.id}"
                     >${this.note.title}</span>
                 </div>
 
                 <div class="controls">
-                    <span class="details">${lastDate}</span>
                     ${starBtn}
                     <button class="delete" data-id="${this.note.id}" aria-label="Delete">&#10005;</button>
                 </div>

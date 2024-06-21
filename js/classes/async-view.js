@@ -7,6 +7,10 @@ class AsyncView extends View {
 
     async asyncRender() {
         this.element.innerHTML = await this.getAsyncHtml();
+
+        this.postRender();
+
+        this.applyEvents();
     }
 
     getAsyncHtml() {

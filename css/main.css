@@ -5,8 +5,14 @@
     --main-text-light-color: #9a9a9a;
     --main-alert-bg: #fec1ba;
     --main-hover-bg: #e1e2e3;
+
+    --main-font-size: 16px;
+
+    --main-box-padding: 16px;
 }
 html {
+    font-family: sans-serif;
+
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
 }
@@ -29,13 +35,12 @@ ul, nav {
     margin: 0;
     padding: 0;
 }
-ol li {
+ul li {
     list-style-type: none;
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1rem;
 }
 button {
-    font-size: 12px;
+    font-size: 0.9rem;
     border: 1px solid var(--main-text-color);
     cursor: pointer;
 }
@@ -48,16 +53,19 @@ button.starred {
 }
 
 #org-list {
-    font-size: 16px;
+    font-size: var(--main-font-size);
 }
 
 /* Boxes */
 
 .box-16 {
-    padding: 16px;
+    padding: var(--main-box-padding);
 }
 .box-v16 {
-    padding: 16px 0;
+    padding: var(--main-box-padding) 0;
+}
+.box-top16 {
+    padding: var(--main-box-padding) 0 0 0;
 }
 .flex-box-3 {
     display: flex;
@@ -66,6 +74,9 @@ button.starred {
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
+}
+.flex-box-3-push {
+    margin-left: auto;
 }
 .flex-box-3-col-1 {
     display: flex;
@@ -121,6 +132,17 @@ button.starred {
     flex: 1;
 }
 
+
+/* Form */
+
+label {
+    font-size: 1rem;
+}
+select {
+    font-size: 0.9rem;
+    padding: 2px 8px;
+}
+
 /* Collapsible */
 
 .collapsible {
@@ -143,6 +165,11 @@ button.starred {
     padding: 0;
 }
 .collapsible-header button {
+    font-size: 1em;
+    border-style: none;
+    background-color: transparent;
+}
+.tags-box button {
     font-size: 1em;
     border-style: none;
     background-color: transparent;
@@ -171,7 +198,7 @@ button.starred {
     margin: 24px 0;
 }
 li.tags-item {
-    line-height: 24px;
+    /*line-height: 24px;*/
 }
 li.notes-item {
     width: 100%;
@@ -185,13 +212,6 @@ li.notes-item {
 .note .headline {
     flex: 0 1 auto;
 }
-.note .details {
-    font-size: 12px;
-    display: none;
-}
-/*.note:hover .details {*/
-/*    display: inline-block;*/
-/*}*/
 .note .controls {
     margin-left: auto;
 }
@@ -202,9 +222,24 @@ li.notes-item {
     text-decoration: line-through;
 }
 
+#incomplete-notes li {
+    padding: 0.2em 0;
+}
+
+#lists li {
+    padding: 0.2em 0;
+}
+
+.counter {
+    color: var(--main-text-light-color);
+}
+
 /* Modifiers */
 
 .hidden {
     display: none;
+}
+.blurred {
+    opacity: 0.6;
 }
 

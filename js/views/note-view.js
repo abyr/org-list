@@ -17,27 +17,25 @@ class NoteView extends View {
             ` : '';
 
         return `
-            <li class="notes-item note">
-                <div class="headline ${this.note.completed ? 'completed' : ''}">
-                    <input type="checkbox"
-                        aria-labelledby="toggle-completed-${this.note.id}-label"
-                        id="toggle-completed-${this.note.id}"
-                        class="toggle-completed"
-                        data-id="${this.note.id}"
-                        ${this.note.completed ? 'checked' : ''} />
+            <div class="headline ${this.note.completed ? 'completed' : ''}">
+                <input type="checkbox"
+                    aria-labelledby="toggle-completed-${this.note.id}-label"
+                    id="toggle-completed-${this.note.id}"
+                    class="toggle-completed"
+                    data-id="${this.note.id}"
+                    ${this.note.completed ? 'checked' : ''} />
 
-                    <span class="headline-text" 
-                        draggable="true"
-                        id="toggle-completed-${this.note.id}-label" 
-                        data-id="${this.note.id}"
-                    >${this.note.title}</span>
-                </div>
+                <span class="headline-text" 
+                    draggable="true"
+                    id="toggle-completed-${this.note.id}-label" 
+                    data-id="${this.note.id}"
+                >${this.note.title}</span>
+            </div>
 
-                <div class="controls">
-                    ${starBtn}
-                    <button class="delete" data-id="${this.note.id}" aria-label="Delete">&#10005;</button>
-                </div>
-            </li>
+            <div class="controls">
+                ${starBtn}
+                <button class="delete" data-id="${this.note.id}" aria-label="Delete">&#10005;</button>
+            </div>
         `;
     }
 

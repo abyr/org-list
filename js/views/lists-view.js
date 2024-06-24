@@ -38,9 +38,9 @@ class ListsView extends AsyncView {
 
     async getAsyncHtml() {
         const staticLists = [{
-            title: '&#10061; All'
+            title: '&#10061; All',
         }, {
-            title: '&star; Starred'
+            title: '&star; Starred',
         }];
 
         const lists = await this.getLists();

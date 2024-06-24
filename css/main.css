@@ -202,6 +202,7 @@ li.tags-item {
 }
 li.notes-item {
     width: 100%;
+    line-height: 24px;
 }
 .note {
     display: flex;
@@ -211,9 +212,14 @@ li.notes-item {
 }
 .note .headline {
     flex: 0 1 auto;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+
 }
 .note .controls {
     margin-left: auto;
+    flex: 0 0 auto;
 }
 .note .completed label {
     text-decoration: line-through;
@@ -221,7 +227,9 @@ li.notes-item {
 .note .completed {
     text-decoration: line-through;
 }
-
+.toggle-completed {
+    margin-top: 4px;
+}
 
 .counter {
     color: var(--main-text-light-color);

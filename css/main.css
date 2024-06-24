@@ -38,6 +38,7 @@ ul, nav {
 ul li {
     list-style-type: none;
     font-size: 1rem;
+    line-height: 1.5rem;
 }
 button {
     font-size: 0.8rem;
@@ -132,7 +133,6 @@ button.starred {
     flex: 1;
 }
 
-
 /* Form */
 
 label {
@@ -197,12 +197,8 @@ select {
     width: 100%;
     margin: 24px 0;
 }
-li.tags-item {
-    /*line-height: 24px;*/
-}
 li.notes-item {
     width: 100%;
-    line-height: 24px;
 }
 .note {
     display: flex;
@@ -214,8 +210,7 @@ li.notes-item {
     flex: 0 1 auto;
     overflow: hidden;
     display: flex;
-    align-items: flex-start;
-
+    align-items: baseline;
 }
 .note .controls {
     margin-left: auto;
@@ -228,7 +223,7 @@ li.notes-item {
     text-decoration: line-through;
 }
 .toggle-completed {
-    margin-top: 4px;
+    margin-right: 8px;
 }
 
 .counter {
@@ -244,3 +239,6 @@ li.notes-item {
     opacity: 0.6;
 }
 
+*[contenteditable="true"]:focus {
+    background-color: #fff;
+}

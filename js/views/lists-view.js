@@ -28,7 +28,7 @@ class ListsView extends AsyncView {
         const listItems = this.element.querySelectorAll('.list-item');
 
         listItems.forEach(x => {
-            this.subscribeElementEvent(x, 'click', this.selectList.bind(this))
+            this.subscribeElementEvent(x, 'click', this.selectList.bind(this));
         });
     }
 
@@ -46,9 +46,7 @@ class ListsView extends AsyncView {
         const lists = await this.getLists();
 
         return `
-            <h2>Lists</h2>
-            
-            <ul>
+            <ul class="box-top16">
                 ${staticLists.map(list => {
                     return `
                         <li>${list.title}</li>

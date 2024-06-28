@@ -21,7 +21,18 @@ class View {
         return this.uid;
     }
 
+    queue(selector) {
+        return this.element.querySelector(selector);
+    }
+
+    queueAll(selector) {
+        return this.element.querySelectorAll(selector);
+    }
+
     render() {
+        if (sharedState.debug) {
+            console.log('render view', this.uid, this);
+        }
         this.element.innerHTML = this.getHtml();
 
         this.postRender();

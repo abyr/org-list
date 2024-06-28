@@ -1,4 +1,7 @@
 import LayoutView from './views/layout-view.js';
+import sharedState from "./classes/shared-state.js";
+
+sharedState.debug = true
 
 const onWindowLoad = async () => {
     const appEl = document.querySelector('#org-list');

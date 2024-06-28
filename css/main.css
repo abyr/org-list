@@ -122,6 +122,20 @@ button.starred {
     overflow: hidden;
     background-color: var(--main-bg-light-color);
 }
+.middle-bar-header {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.middle-bar-header {
+    align-self: flex-end;
+}
+.middle-bar-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
 .last-bar {
     height: 100%;
     position: relative;

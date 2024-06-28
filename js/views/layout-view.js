@@ -1,14 +1,17 @@
 import AsyncView from '../classes/async-view.js';
+import ContextMenu from "./components/context-menu.js";
+import MiddleBarHeader from "./middle-bar-header.js";
+import LastBarView from "./last-bar-view.js";
 import NotesView from './notes-view.js';
 import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
-import messageBus from '../classes/shared-message-bus.js';
 import Collapsible from './components/collapsible.js';
+
+import messageBus from '../classes/shared-message-bus.js';
 import notesRepository from '../storage/notes-repository.js';
-import ContextMenu from "./components/context-menu.js";
-import LastBarView from "./last-bar-view.js";
 import listsRepository from "../storage/lists-repository.js";
+
 
 class LayoutView extends AsyncView {
 
@@ -27,6 +30,7 @@ class LayoutView extends AsyncView {
 
         this.element.innerHTML = await this.getAsyncHtml();
 
+        this.renderBatchControls();
         await this.renderLastBar();
         await this.renderLists();
         await this.renderIncompleteNotes();
@@ -53,6 +57,16 @@ class LayoutView extends AsyncView {
         this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
 
         new ContextMenu({ element: document.querySelector('.side-bar-header') });
+    }
+
+    renderBatchControls() {
+        const middleHeaderEl = this.queue('.middle-bar-header');
+
+        const middleHeaderView = new MiddleBarHeader({ element: middleHeaderEl });
+
+        middleHeaderView.render();
+
+        this.middleHeaderView = middleHeaderView;
     }
 
     async renderLastBar() {
@@ -215,55 +229,60 @@ class LayoutView extends AsyncView {
                 <div class="flex-box-3-col-2">
                     <div class="middle-bar box-16">
 
-                        <div id="notes">
-                            <div class="add-note-box">
-                                <input id="add-note-input" 
-                                       class="add-note-input" 
-                                       type="text" 
-                                       placeholder="Add a note..." />
-                            </div>
-
-                            ${(this.filter || this.list) ? `
-                                <div class="box-v16">
-                                    </div><button id="reset-filter-btn"> < </button>
-                                    ${this.filter && this.filter.tag ? `
-                                        <span># ${this.filter.tag}</span>                                   
-                                    ` : '' }
-                                    ${this.list ? `
-                                        <span class="list-title" 
-                                            data-id="${this.list.id}" 
-                                            contenteditable="true"
-                                        >${this.list.title}</span>
-                                    ` : '' }
-                                </div>
-                            ` : ''}
-                            <div id="incomplete-notes"></div>
-
-                            ${completedNotes.length ? `
-                                <div class="collapsible">
-                                    <div class="collapsible-header">
-                                        <button type="button"
-                                            aria-expanded="true"
-                                            class="collapsible-trigger"
-                                            aria-controls="completed-notes-section-toggle"
-                                            id="completed-notes-section"
-                                        >
-                                            <span class="collapsible-title">
-                                                Completed notes
-                                                <span class="collapsible-icon"></span>
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div id="completed-notes-section-toggle"
-                                         role="region"
-                                         aria-labelledby="completed-notes-section"
-                                         class="collapsible-content">
+                        <div class="middle-bar-header"></div>
+                        
+                        <div class="middle-bar-content box-top16">
     
-                                         <div id="completed-notes"></div>
-                                    </div>
+                            <div id="notes">
+                                <div class="add-note-box">
+                                    <input id="add-note-input" 
+                                           class="add-note-input" 
+                                           type="text" 
+                                           placeholder="Add a note..." />
                                 </div>
-                            ` : ''}
-
+    
+                                ${(this.filter || this.list) ? `
+                                    <div class="box-v16">
+                                        </div><button id="reset-filter-btn"> < </button>
+                                        ${this.filter && this.filter.tag ? `
+                                            <span># ${this.filter.tag}</span>                                   
+                                        ` : '' }
+                                        ${this.list ? `
+                                            <span class="list-title" 
+                                                data-id="${this.list.id}" 
+                                                contenteditable="true"
+                                            >${this.list.title}</span>
+                                        ` : '' }
+                                    </div>
+                                ` : ''}
+                                <div id="incomplete-notes"></div>
+    
+                                ${completedNotes.length ? `
+                                    <div class="collapsible">
+                                        <div class="collapsible-header">
+                                            <button type="button"
+                                                aria-expanded="true"
+                                                class="collapsible-trigger"
+                                                aria-controls="completed-notes-section-toggle"
+                                                id="completed-notes-section"
+                                            >
+                                                <span class="collapsible-title">
+                                                    Completed notes
+                                                    <span class="collapsible-icon"></span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div id="completed-notes-section-toggle"
+                                             role="region"
+                                             aria-labelledby="completed-notes-section"
+                                             class="collapsible-content">
+        
+                                             <div id="completed-notes"></div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+    
+                            </div>
                         </div>
 
                     </div>
@@ -300,6 +319,7 @@ class LayoutView extends AsyncView {
     }
 
     async refresh() {
+        this.notes = null;
         await this.asyncRender();
     }
 
@@ -364,6 +384,14 @@ class LayoutView extends AsyncView {
             this.incompleteView.destroy();
             this.incompleteView = null;
         }
+        if (this.middleHeaderView) {
+            this.middleHeaderView.destroy();
+            this.middleHeaderView = null;
+        }
+        if (this.lastBarView) {
+            this.lastBarView.destroy();
+            this.lastBarView = null;
+        }
     }
 
     destroy() {
@@ -375,6 +403,7 @@ class LayoutView extends AsyncView {
         this.completedView = null;
         this.incompleteView = null;
         this.tagsView = null;
+        this.middleHeaderView = null;
         this.lastBarView = null;
 
         super.destroy();

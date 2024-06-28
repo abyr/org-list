@@ -30,7 +30,7 @@ class View {
     }
 
     render() {
-        if (sharedState.debug) {
+        if (sharedState.getProp('debug') === true) {
             console.log('render view', this.uid, this);
         }
         this.element.innerHTML = this.getHtml();

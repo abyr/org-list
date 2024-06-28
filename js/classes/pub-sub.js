@@ -1,3 +1,14 @@
+/**
+ * Usage example:
+ *
+ * const pubSub = new PubSub();
+ *
+ * pubSub.subscribe('update', subscriber);
+ *
+ * pubSub.publish('update', { data: 1 });
+ *
+ * pubSub.unsubscribe('update', subscriber);
+ */
 class PubSub {
 
     constructor() {

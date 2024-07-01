@@ -70,6 +70,10 @@ class View {
             return;
         }
 
+        if (!this.eventSubscribersMap) {
+            this.eventSubscribersMap = {};
+        }
+
         if (!this.eventSubscribersMap[eventName]) {
             this.eventSubscribersMap[eventName] = [];
         }

@@ -4,6 +4,16 @@ import notesRepository from '../storage/notes-repository.js';
 import listsRepository from '../storage/lists-repository.js';
 import messageBus from "../classes/shared-message-bus.js";
 
+const staticLists = [{
+    id: 'inbox',
+    title: '&#10064; Inbox',
+    notes: [],
+}, {
+    id: 'starred',
+    title: '&star; Starred',
+    notes: [],
+}];
+
 class ListsView extends AsyncView {
 
     constructor({ element }) {
@@ -33,23 +43,41 @@ class ListsView extends AsyncView {
     }
 
     async selectList(event) {
-        messageBus.publish('list:selected', { id: +event.currentTarget.dataset.id });
+        messageBus.publish('list:selected', { id: event.currentTarget.dataset.id });
     }
 
     async getAsyncHtml() {
-        const staticLists = [{
-            title: '&#10061; All',
-        }, {
-            title: '&star; Starred',
-        }];
-
         const lists = await this.getLists();
+        const allNotes = await notesRepository.getAll();
+        const incompleteNotes = allNotes.filter(x => !x.completed);
+
+        const listedNotesIds = lists.reduce((ids, list) => ids.concat(list.notes || []), []);
+
+        staticLists.forEach(x => {
+            if (x.id === 'inbox') {
+                x.notes = incompleteNotes.reduce((res, note) => {
+                    if (!listedNotesIds.includes(+note.id)) {
+                        res.push(note.id);
+                    }
+
+                    return res;
+                }, []);
+
+            } else if (x.id === 'starred') {
+                x.notes = incompleteNotes.filter(x => x.starred && !x.completed);
+            }
+        });
 
         return `
             <ul class="box-top16">
                 ${staticLists.map(list => {
                     return `
-                        <li>${list.title}</li>
+                        <li class="flex-box-3 list-item" data-id="${list.id}">
+                            <span>${list.title}</span>
+                            <span class="flex-box-3-push counter">
+                                ${list.notes && list.notes.length ? list.notes.length : ''}
+                            </span>
+                        </li>
                     `;
                 }).join('')}
             </ul>

@@ -243,7 +243,8 @@ class LayoutView extends AsyncView {
     
                                 ${(this.filter || this.list) ? `
                                     <div class="box-v16">
-                                        </div><button id="reset-filter-btn"> < </button>
+                                        <button id="reset-filter-btn"> < </button>
+                                        
                                         ${this.filter && this.filter.tag ? `
                                             <span># ${this.filter.tag}</span>                                   
                                         ` : '' }
@@ -255,6 +256,7 @@ class LayoutView extends AsyncView {
                                         ` : '' }
                                     </div>
                                 ` : ''}
+
                                 <div id="incomplete-notes"></div>
     
                                 ${completedNotes.length ? `
@@ -319,7 +321,6 @@ class LayoutView extends AsyncView {
     }
 
     async refresh() {
-        this.notes = null;
         await this.asyncRender();
     }
 
@@ -339,6 +340,15 @@ class LayoutView extends AsyncView {
     async showList({ id }){
         this.filter = null;
 
+        if (id === 'inbox') {
+            await this.showInbox();
+            return;
+
+        } else if (id === 'starred') {
+            await this.showStarred();
+            return;
+        }
+
         const list = await listsRepository.get(id);
         const notesIds = list.notes;
 
@@ -354,6 +364,35 @@ class LayoutView extends AsyncView {
 
         this.list = list;
         this.notes = notes;
+
+        await this.refresh();
+
+        list.notes = notes.map(x => x.id);
+
+        await listsRepository.update(this.list.id, list);
+    }
+
+    async showInbox() {
+        const allLists = await listsRepository.getAll();
+        const allNotes = await notesRepository.getAll();
+
+        const listedNotesIds = allLists.reduce((ids, list) => ids.concat(list.notes || []), []);
+
+        this.notes = allNotes.reduce((res, note) => {
+            if (!listedNotesIds.includes(+note.id)) {
+                res.push(note);
+            }
+
+            return res;
+        }, []);
+
+        await this.refresh();
+    }
+
+    async showStarred() {
+        const allNotes = await notesRepository.getAll();
+
+        this.notes = allNotes.filter(x => x.starred && !x.completed);
 
         await this.refresh();
     }

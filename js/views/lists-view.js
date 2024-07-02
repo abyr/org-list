@@ -111,7 +111,7 @@ class ListsView extends AsyncView {
             const newTags = note.title.split(' ').filter(word => {
                 const isTag = word.startsWith('#');
 
-                if (word === '#focus') {
+                if (word === '#focus' && !note.completed) {
                     incObjProp(tagsLenMap, word);
                 }
 
@@ -122,9 +122,11 @@ class ListsView extends AsyncView {
                 return !res.includes(word);
             });
 
-            newTags.forEach(tag => {
-                incObjProp(tagsLenMap, tag);
-            });
+            if (!note.completed) {
+                newTags.forEach(tag => {
+                    incObjProp(tagsLenMap, tag);
+                });
+            }
 
             if (newTags) {
                 res = res.concat(newTags);

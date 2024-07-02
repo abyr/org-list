@@ -244,6 +244,19 @@ li.notes-item {
     color: var(--main-text-light-color);
 }
 
+.headline-text,
+.list-btn,
+.tag-btn {
+    cursor: pointer;
+}
+.tag-item {
+    margin-left: 2px;
+}
+.tag-btn {
+    margin-left: 8px;
+}
+
+
 /* Modifiers */
 
 .hidden {

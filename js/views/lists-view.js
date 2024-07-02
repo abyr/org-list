@@ -73,7 +73,7 @@ class ListsView extends AsyncView {
                 ${staticLists.map(list => {
                     return `
                         <li class="flex-box-3 list-item" data-id="${list.id}">
-                            <span>${list.title}</span>
+                            <span class="list-btn">${list.title}</span>
                             <span class="flex-box-3-push counter">
                                 ${list.notes && list.notes.length ? list.notes.length : ''}
                             </span>
@@ -86,7 +86,7 @@ class ListsView extends AsyncView {
                 ${lists.map(list => {
                     return `
                         <li class="flex-box-3 list-item" data-id="${list.id}">
-                            <span>&#9776; ${list.title}</span>
+                            <span class="list-btn">&#9776; ${list.title}</span>
                             <span class="flex-box-3-push counter">
                                 ${list.notes && list.notes.length ? list.notes.length : ''}
                             </span>
@@ -105,10 +105,15 @@ class ListsView extends AsyncView {
 
     async renderTags() {
         const notes = await this.getNotes();
+        const tagsLenMap = {};
 
         const tags = notes.reduce((res, note) => {
-            const newTags = note.title.split(' ').filter(word=> {
+            const newTags = note.title.split(' ').filter(word => {
                 const isTag = word.startsWith('#');
+
+                if (word === '#focus') {
+                    incObjProp(tagsLenMap, word);
+                }
 
                 if (!isTag) {
                     return false;
@@ -117,12 +122,21 @@ class ListsView extends AsyncView {
                 return !res.includes(word);
             });
 
+            newTags.forEach(tag => {
+                incObjProp(tagsLenMap, tag);
+            });
+
             if (newTags) {
                 res = res.concat(newTags);
             }
 
             return res;
-        }, ['#focus']).map(x => x.substring(1));
+        }, ['#focus']).map(tag => {
+            return {
+                title: tag.substring(1),
+                count: tagsLenMap[tag] || 0,
+            };
+        });
 
         this.tagsView = new TagsView({
             element: document.getElementById('tags')
@@ -170,6 +184,13 @@ class ListsView extends AsyncView {
         this.filter = filter;
     }
 
+}
+
+function incObjProp (obj, key) {
+    if (typeof obj[key] === 'undefined') {
+        obj[key] = 0;
+    }
+    obj[key] += 1;
 }
 
 export default ListsView;

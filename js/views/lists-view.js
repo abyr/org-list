@@ -4,15 +4,7 @@ import notesRepository from '../storage/notes-repository.js';
 import listsRepository from '../storage/lists-repository.js';
 import messageBus from "../classes/shared-message-bus.js";
 
-const staticLists = [{
-    id: 'inbox',
-    title: '&#10064; Inbox',
-    notes: [],
-}, {
-    id: 'starred',
-    title: '&star; Starred',
-    notes: [],
-}];
+import staticLists from '../storage/static-lists.js';
 
 class ListsView extends AsyncView {
 
@@ -73,7 +65,7 @@ class ListsView extends AsyncView {
                 ${staticLists.map(list => {
                     return `
                         <li class="flex-box-3 list-item" data-id="${list.id}">
-                            <span class="list-btn">${list.title}</span>
+                            <span class="list-btn">${list.icon} ${list.title}</span>
                             <span class="flex-box-3-push counter">
                                 ${list.notes && list.notes.length ? list.notes.length : ''}
                             </span>

@@ -7,6 +7,7 @@ import IncompleteNotesView from './incomplete-notes-view.js';
 import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
 import Collapsible from './components/collapsible.js';
+import staticLists from '../storage/static-lists.js';
 
 import messageBus from '../classes/shared-message-bus.js';
 import notesRepository from '../storage/notes-repository.js';
@@ -46,7 +47,7 @@ class LayoutView extends AsyncView {
             collapsibleList.forEach(el => new Collapsible(el));
         }
 
-        if (this.filter || this.list) {
+        if (this.filter || this.list || this.staticList) {
             const resetFilter = document.getElementById('reset-filter-btn');
 
             this.subscribeElementEvent(resetFilter, 'click', this.resetFilter.bind(this));
@@ -241,18 +242,24 @@ class LayoutView extends AsyncView {
                                            placeholder="Add a note..." />
                                 </div>
     
-                                ${(this.filter || this.list) ? `
+                                ${(this.filter || this.list || this.staticList) ? `
                                     <div class="box-v16">
                                         <button id="reset-filter-btn"> < </button>
                                         
                                         ${this.filter && this.filter.tag ? `
-                                            <span># ${this.filter.tag}</span>                                   
+                                            <span># ${this.filter.tag}</span>              
                                         ` : '' }
                                         ${this.list ? `
                                             <span class="list-title" 
                                                 data-id="${this.list.id}" 
                                                 contenteditable="true"
                                             >${this.list.title}</span>
+                                        ` : '' }
+                                        
+                                        ${this.staticList ? `
+                                            <span class="list-title" 
+                                                data-id="${this.staticList.id}" 
+                                            >${this.staticList.title}</span>
                                         ` : '' }
                                     </div>
                                 ` : ''}
@@ -331,6 +338,7 @@ class LayoutView extends AsyncView {
     async saveFilter(filter) {
         this.notes = null;
         this.list = null;
+        this.staticList = null;
 
         this.filter = filter;
 
@@ -373,6 +381,8 @@ class LayoutView extends AsyncView {
     }
 
     async showInbox() {
+        this.staticList = staticLists.find(x => x.id === 'inbox');
+
         const allLists = await listsRepository.getAll();
         const allNotes = await notesRepository.getAll();
 
@@ -390,6 +400,8 @@ class LayoutView extends AsyncView {
     }
 
     async showStarred() {
+        this.staticList = this.staticList = staticLists.find(x => x.id === 'starred');
+
         const allNotes = await notesRepository.getAll();
 
         this.notes = allNotes.filter(x => x.starred && !x.completed);

@@ -269,3 +269,9 @@ li.notes-item {
 *[contenteditable="true"]:focus {
     background-color: #fff;
 }
+
+@media screen and (max-width: 480px) {
+    .flex-box-3-col-1 {
+        display: none;
+    }
+}

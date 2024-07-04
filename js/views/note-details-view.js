@@ -23,6 +23,21 @@ class NoteDetailsView extends View {
         this.subscribeElementEvent(titleEl, 'blur', this.applyTitle.bind(this));
     }
 
+    postRender() {
+        const el = this.queue('[contenteditable="true"]');
+
+        this.subscribeElementEvent(el, 'keydown', this.saveOnEnter.bind(this));
+    }
+
+    saveOnEnter(event) {
+        if (event.code === 'Enter') {
+            event.preventDefault();
+
+            this.applyTitle(event);
+        }
+
+    }
+
     async applyTitle(event) {
         const newTitle = event.currentTarget.innerText.trim();
 

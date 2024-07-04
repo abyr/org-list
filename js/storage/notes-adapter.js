@@ -1,9 +1,21 @@
 import CacheableAdapter from './cachable-adapter.js';
 
+/**
+ * @typedef {{
+ *   id: number,
+ *   title: string,
+ *   starred: boolean,
+ *   position: number,
+ *   completed: boolean,
+ *   createdAt: number,
+ *   updatedAt: number,
+ *   }} Note
+ */
+
 class NotesStoreAdapter extends CacheableAdapter {
     constructor() {
         super();
-        
+
         this.name = 'notes';
     }
 
@@ -15,7 +27,7 @@ class NotesStoreAdapter extends CacheableAdapter {
      * @param {boolean} [args.starred]
      * @param {number} [args.position] 
      * @param {boolean} [args.completed]
-     * 
+     *
      * @returns {Promise}
      */
     put(id, { title, starred, position, completed }) {
@@ -23,21 +35,24 @@ class NotesStoreAdapter extends CacheableAdapter {
 
             this.invalidateCache();
 
-            const fieldsData = { title, starred, position, completed };
+            /**
+             * @type {Note}
+             */
+            const newNote = { title, starred, position, completed };
 
             const isNew = !id;
             const date = new Date();
             const timestamp = +date;
 
             if (isNew) {
-                fieldsData.createdAt = timestamp;
-                fieldsData.completed = false;
+                newNote.createdAt = timestamp;
+                newNote.completed = false;
             } else {
-                fieldsData.id = id;
-                fieldsData.updatedAt = timestamp;
+                newNote.id = id;
+                newNote.updatedAt = timestamp;
             }
 
-            this.idba.putRecord(this.name, fieldsData).then(res => {
+            this.idba.putRecord(this.name, newNote).then(res => {
                 resolve(res);
 
             }).catch(err => {

@@ -3,7 +3,7 @@ import CacheableAdapter from './cachable-adapter.js';
 /**
  * @typedef {{
  *   title: string,
- *   notes: Array,
+ *   notes: array,
  *   orderBy: string,
  *   sortBy: string,
  *   archived: boolean,

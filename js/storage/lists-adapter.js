@@ -1,7 +1,7 @@
 import CacheableAdapter from './cachable-adapter.js';
 
 /**
- * @type {{
+ * @typedef {{
  *   title: string,
  *   notes: Array,
  *   orderBy: string,

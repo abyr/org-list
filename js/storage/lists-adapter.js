@@ -28,7 +28,7 @@ class ListsStoreAdapter extends CacheableAdapter {
      * @param {string} [args.sortBy] field name
      * @param {string} [args.orderBy] asc, desc
      * @param {boolean} [args.archived]
-     * @param {string} [args.createdAt]
+     * @param {number} [args.createdAt]
      *
      * @returns {Promise}
      */

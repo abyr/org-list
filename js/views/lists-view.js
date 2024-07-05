@@ -87,11 +87,11 @@ class ListsView extends AsyncView {
                 }).join('')}
             </ul>
             
-            <div class="add-list-box box-top16 hidden">
+            <div id="tags" class="box box-v16"></div>
+            
+            <div class="add-list-box box-top16">
                 <input id="add-list-input" class="add-list-input" type="text" placeholder="Add a list..." />
             </div>
-            
-            <div id="tags" class="box box-v16"></div>
         `;
     }
 

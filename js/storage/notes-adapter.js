@@ -28,6 +28,7 @@ class NotesStoreAdapter extends CacheableAdapter {
      * @param {boolean} [args.starred]
      * @param {number} [args.position] 
      * @param {boolean} [args.completed]
+     * @param {number} [args.createdAt]
      *
      * @returns {Promise}
      */
@@ -37,6 +38,7 @@ class NotesStoreAdapter extends CacheableAdapter {
         starred= false,
         position,
         completed= false,
+        createdAt,
     }) {
         return new Promise((resolve, reject) => {
 
@@ -45,7 +47,7 @@ class NotesStoreAdapter extends CacheableAdapter {
             /**
              * @type {NoteObject}
              */
-            const noteObject = { title, description, starred, position, completed };
+            const noteObject = { title, description, starred, position, completed, createdAt };
 
             const isNew = !id;
             const date = new Date();

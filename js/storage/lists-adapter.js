@@ -7,8 +7,8 @@ import CacheableAdapter from './cachable-adapter.js';
  *   orderBy: string,
  *   sortBy: string,
  *   archived: boolean,
- *   createdAt: string,
- *   updatedAt: string
+ *   createdAt: number,
+ *   updatedAt: number,
  * }} ListObject
  */
 
@@ -28,6 +28,7 @@ class ListsStoreAdapter extends CacheableAdapter {
      * @param {string} [args.sortBy] field name
      * @param {string} [args.orderBy] asc, desc
      * @param {boolean} [args.archived]
+     * @param {string} [args.createdAt]
      *
      * @returns {Promise}
      */
@@ -37,6 +38,7 @@ class ListsStoreAdapter extends CacheableAdapter {
         sortBy,
         orderBy,
         archived = false,
+        createdAt
     }) {
         return new Promise((resolve, reject) => {
 
@@ -51,6 +53,7 @@ class ListsStoreAdapter extends CacheableAdapter {
                 sortBy,
                 orderBy,
                 archived,
+                createdAt,
             };
 
             const isNew = !id;

@@ -4,12 +4,13 @@ import CacheableAdapter from './cachable-adapter.js';
  * @typedef {{
  *   id: number,
  *   title: string,
+ *   description: string,
  *   starred: boolean,
  *   position: number,
  *   completed: boolean,
  *   createdAt: number,
  *   updatedAt: number,
- *   }} Note
+ *   }} NoteObject
  */
 
 class NotesStoreAdapter extends CacheableAdapter {
@@ -30,29 +31,40 @@ class NotesStoreAdapter extends CacheableAdapter {
      *
      * @returns {Promise}
      */
-    put(id, { title, starred, position, completed }) {
+    put(id, {
+        title,
+        description = '',
+        starred= false,
+        position,
+        completed= false,
+    }) {
         return new Promise((resolve, reject) => {
 
             this.invalidateCache();
 
             /**
-             * @type {Note}
+             * @type {NoteObject}
              */
-            const newNote = { title, starred, position, completed };
+            const noteObject = { title, description, starred, position, completed };
 
             const isNew = !id;
             const date = new Date();
             const timestamp = +date;
 
             if (isNew) {
-                newNote.createdAt = timestamp;
-                newNote.completed = false;
+
+                if (!title) {
+                    return reject('Title is required');
+                }
+
+                noteObject.createdAt = timestamp;
+                noteObject.completed = false;
             } else {
-                newNote.id = id;
-                newNote.updatedAt = timestamp;
+                noteObject.id = id;
+                noteObject.updatedAt = timestamp;
             }
 
-            this.idba.putRecord(this.name, newNote).then(res => {
+            this.idba.putRecord(this.name, noteObject).then(res => {
                 resolve(res);
 
             }).catch(err => {

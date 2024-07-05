@@ -30,6 +30,7 @@ class NoteView extends View {
                     id="toggle-completed-${this.note.id}-label" 
                     data-id="${this.note.id}"
                 >${this.note.title}</span>
+                
             </div>
 
             <div class="controls">

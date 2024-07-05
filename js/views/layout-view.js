@@ -148,7 +148,17 @@ class LayoutView extends AsyncView {
     async dragDrop(event) {
         const el = event.currentTarget;
 
-        this.dragToListId = +el.dataset.id;
+        if (!el.classList.contains('list-item')) {
+            return;
+        }
+
+        const targetId = +el.dataset.id;
+
+        if (!targetId) {
+            return;
+        }
+
+        this.dragToListId = targetId;
 
         const lists = await listsRepository.getAll();
 
@@ -347,6 +357,7 @@ class LayoutView extends AsyncView {
 
     async showList({ id }){
         this.filter = null;
+        this.staticList = null;
 
         if (id === 'inbox') {
             await this.showInbox();
@@ -381,6 +392,7 @@ class LayoutView extends AsyncView {
     }
 
     async showInbox() {
+        this.list = null;
         this.staticList = staticLists.find(x => x.id === 'inbox');
 
         const allLists = await listsRepository.getAll();
@@ -400,6 +412,8 @@ class LayoutView extends AsyncView {
     }
 
     async showStarred() {
+        this.list = null;
+
         this.staticList = this.staticList = staticLists.find(x => x.id === 'starred');
 
         const allNotes = await notesRepository.getAll();

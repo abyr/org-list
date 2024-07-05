@@ -13,7 +13,20 @@ class NoteDetailsView extends View {
                 role="textbox"
                 contenteditable="true"
                 aria-placeholder="title"
-                aria-labelledby="noteTitleLabel">${note.title}</div>
+                aria-labelledby="noteTitleLabel"
+            ><b>${note.title}</b></div>
+            
+            <div class="box-v16">
+                <div>
+                    Starred: ${this.note.starred}
+                </div>
+                <div>
+                    Created at: ${this.note.createdAt}
+                </div>
+                <div>
+                    Updated at: ${this.note.updatedAt}</div>
+                </div>
+            </div>
         `;
     }
 

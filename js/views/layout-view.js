@@ -249,7 +249,7 @@ class LayoutView extends AsyncView {
                                     <input id="add-note-input" 
                                            class="add-note-input" 
                                            type="text" 
-                                           placeholder="Add a note..." />
+                                           placeholder="+ Add a note..." />
                                 </div>
     
                                 ${(this.filter || this.list || this.staticList) ? `

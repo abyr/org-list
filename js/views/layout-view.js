@@ -58,6 +58,18 @@ class LayoutView extends AsyncView {
         this.subscribeElementEvent(addNoteEl, 'keydown', this.addNote.bind(this));
 
         new ContextMenu({ element: document.querySelector('.side-bar-header') });
+
+        this.postRender();
+    }
+
+    postRender() {
+        super.postRender();
+
+        const els = this.queueAll('[contenteditable="true"]');
+
+        els.forEach(el => {
+            this.subscribeElementEvent(el, 'keydown', this.saveOnEnter.bind(this));
+        });
     }
 
     renderBatchControls() {
@@ -262,6 +274,7 @@ class LayoutView extends AsyncView {
                                         ${this.list ? `
                                             <span class="list-title" 
                                                 data-id="${this.list.id}" 
+                                                data-type="list"
                                                 contenteditable="true"
                                             >${this.list.title}</span>
                                         ` : '' }
@@ -432,6 +445,31 @@ class LayoutView extends AsyncView {
                 '#' + this.filter.tag :
                 ''
         });
+    }
+
+    async saveOnEnter() {
+        if (event.code === 'Enter') {
+            event.preventDefault();
+
+            const $target = event.currentTarget;
+
+            const id = Number($target.dataset.id);
+
+            const originList = await listsRepository.get(id);
+
+            const newTitle = $target.innerText.trim();
+
+            await listsRepository.update(id, Object.assign({}, originList, {
+                title: newTitle,
+            }));
+
+            messageBus.publish('list:updated', {
+                action: 'update',
+                id: id,
+            });
+
+            this.refresh();
+        }
     }
 
     cleanup() {

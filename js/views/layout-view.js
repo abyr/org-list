@@ -65,11 +65,19 @@ class LayoutView extends AsyncView {
     postRender() {
         super.postRender();
 
-        const els = this.queueAll('[contenteditable="true"]');
+        const editableList = this.queueAll('[contenteditable="true"]');
 
-        els.forEach(el => {
+        editableList.forEach(el => {
             this.subscribeElementEvent(el, 'keydown', this.saveOnEnter.bind(this));
         });
+
+
+        const deleteList = this.queueAll('.delete-list');
+
+        deleteList.forEach(el => {
+            this.subscribeElementEvent(el, 'click', this.deleteList.bind(this));
+        });
+
     }
 
     renderBatchControls() {
@@ -265,7 +273,7 @@ class LayoutView extends AsyncView {
                                 </div>
     
                                 ${(this.filter || this.list || this.staticList) ? `
-                                    <div class="box-v16">
+                                    <div class="flex-box-3 box-v16">
                                         <button id="reset-filter-btn"> < </button>
                                         
                                         ${this.filter && this.filter.tag ? `
@@ -277,6 +285,11 @@ class LayoutView extends AsyncView {
                                                 data-type="list"
                                                 contenteditable="true"
                                             >${this.list.title}</span>
+                                            
+                                            <button class="flex-box-3-push delete-list" 
+                                                data-id="${this.list.id}"
+                                                class="flex-box-3-push"
+                                            >x Delete</button>
                                         ` : '' }
                                         
                                         ${this.staticList ? `
@@ -348,14 +361,6 @@ class LayoutView extends AsyncView {
             });
             await this.asyncRender();
         }
-    }
-
-    async refresh() {
-        await this.asyncRender();
-    }
-
-    async resetFilter() {
-        await this.saveFilter(null);
     }
 
     async saveFilter(filter) {
@@ -470,6 +475,24 @@ class LayoutView extends AsyncView {
 
             this.refresh();
         }
+    }
+
+    async deleteList() {
+        const target = event.currentTarget;
+
+        const id = Number(target.dataset.id);
+
+        await listsRepository.delete(id);
+
+        await this.resetFilter();
+    }
+
+    async refresh() {
+        await this.asyncRender();
+    }
+
+    async resetFilter() {
+        await this.saveFilter(null);
     }
 
     cleanup() {

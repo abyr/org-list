@@ -18,13 +18,17 @@ class NoteDetailsView extends View {
             
             <div class="box-v16">
                 <div>
-                    Starred: ${this.note.starred}
+                    Starred: ${this.note.starred ? 'yes' : 'no'}
                 </div>
+
+
                 <div>
-                    Created at: ${this.note.createdAt}
+                    Created at: ${this.note.createdAt ? new Date(this.note.createdAt).toLocaleString() : '...'}
                 </div>
+                
+
                 <div>
-                    Updated at: ${this.note.updatedAt}</div>
+                    Updated at: ${this.note.updatedAt ? new Date(this.note.updatedAt).toLocaleString() : '...'}</div>
                 </div>
             </div>
         `;

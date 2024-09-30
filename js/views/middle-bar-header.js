@@ -20,6 +20,9 @@ class MiddleBarHeader extends View {
     }
 
     async removeCompleted() {
+        if (!window.confirm('Delete all completed notes?')) {
+            return;
+        }
         const notes = await notesRepository.getAll();
 
         const completedNotesIds = notes.filter(x => x.completed).map(x => x.id);

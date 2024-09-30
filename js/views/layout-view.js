@@ -29,6 +29,8 @@ class LayoutView extends AsyncView {
     async asyncRender() {
         this.cleanup();
 
+        this.note = null;
+
         this.element.innerHTML = await this.getAsyncHtml();
 
         this.renderBatchControls();
@@ -180,9 +182,17 @@ class LayoutView extends AsyncView {
 
         this.dragToListId = targetId;
 
-        const lists = await listsRepository.getAll();
+        await this.updateListWithNote(this.dragToListId, this.dragNoteId);
 
-        const list = await listsRepository.get(this.dragToListId);
+        this.dragNoteId = null;
+        this.dragToListId = null;
+
+        await this.refresh();
+    }
+
+    async updateListWithNote(listId, noteId) {
+        const lists = await listsRepository.getAll();
+        const list = await listsRepository.get(listId);
 
         for (const x of lists) {
             const index = x.notes && x.notes.indexOf(this.dragNoteId);
@@ -194,21 +204,16 @@ class LayoutView extends AsyncView {
         }
 
         if (list.notes) {
-            if (list.notes.includes(this.dragNoteId)) {
+            if (list.notes.includes(noteId)) {
                 return
             }
 
-            list.notes.push(this.dragNoteId);
+            list.notes.push(noteId);
         } else {
-            list.notes = [this.dragNoteId];
+            list.notes = [noteId];
         }
 
-        await listsRepository.update(this.dragToListId, list);
-
-        this.dragNoteId = null;
-        this.dragToListId = null;
-
-        await this.refresh();
+        await listsRepository.update(listId, list);
     }
 
     async renderCompletedNotes() {
@@ -356,10 +361,22 @@ class LayoutView extends AsyncView {
         const text = el.value.trim();
 
         if (text) {
-            await notesRepository.create({
-                title: text,
+            const tag = this.getTagFilter();
+
+            const noteId = await notesRepository.create({
+                title: `${text}${tag ? (' #' + tag) : ''}`,
             });
-            await this.asyncRender();
+
+            if (this.list) {
+                await this.updateListWithNote(this.list.id, noteId);
+
+                this.notes = null;
+
+                await this.showList({id: this.list.id });
+
+            } else {
+                await this.refresh();
+            }
         }
     }
 
@@ -371,6 +388,13 @@ class LayoutView extends AsyncView {
         this.filter = filter;
 
         await this.refresh();
+    }
+
+    getTagFilter() {
+        if (!this.filter) {
+            return;
+        }
+        return this.filter.tag;
     }
 
     async showList({ id }){
@@ -445,11 +469,17 @@ class LayoutView extends AsyncView {
         if (this.notes) {
             return this.notes;
         }
-        return await notesRepository.search({
+        return await this.refreshNotes();
+    }
+
+    async refreshNotes() {
+        const notes = await notesRepository.search({
             text: this.filter ?
                 '#' + this.filter.tag :
                 ''
         });
+
+        return notes;
     }
 
     async saveOnEnter() {
@@ -473,7 +503,7 @@ class LayoutView extends AsyncView {
                 id: id,
             });
 
-            this.refresh();
+            await this.refresh();
         }
     }
 
@@ -517,6 +547,10 @@ class LayoutView extends AsyncView {
         if (this.lastBarView) {
             this.lastBarView.destroy();
             this.lastBarView = null;
+        }
+        if (this.listsView) {
+            this.listsView.destroy();
+            this.listsView = null;
         }
     }
 

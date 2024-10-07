@@ -20,9 +20,7 @@ class TagsView extends View {
                     return `
                         <li class="flex-box-3 tag-item" data-id="${tag.title}">
                             # <span class="tag-btn">${tag.title}</span>
-                            <span class="flex-box-3-push counter">
-                                ${tag.count}
-                            </span>
+                            <span class="flex-box-3-push counter"> ${tag.count} </span>
                         </li>
                     `;
                 }).join('')}

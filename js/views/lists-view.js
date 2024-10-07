@@ -41,9 +41,23 @@ class ListsView extends AsyncView {
     async getAsyncHtml() {
         const lists = await this.getLists();
         const allNotes = await notesRepository.getAll();
-        const incompleteNotes = allNotes.filter(x => !x.completed);
+        const incompleteNotes = allNotes.filter(x => !x.completed)
+        const incompleteIds = incompleteNotes.map(x => x.id);
 
         const listedNotesIds = lists.reduce((ids, list) => ids.concat(list.notes || []), []);
+
+        const userLists = lists.reduce((res, list) => {
+            list.incompleteLen = list.notes.reduce((res, id) => {
+                if (incompleteIds.includes(id)) {
+                    res = res + 1;
+                }
+                return res;
+            }, 0);
+
+            res.push(list);
+
+            return res;
+        }, [])
 
         staticLists.forEach(x => {
             if (x.id === 'inbox') {
@@ -75,13 +89,11 @@ class ListsView extends AsyncView {
             </ul>
             
             <ul>
-                ${lists.map(list => {
+                ${userLists.map(list => {
                     return `
                         <li class="flex-box-3 list-item" data-id="${list.id}">
                             <span class="list-btn">&#9776; ${list.title}</span>
-                            <span class="flex-box-3-push counter">
-                                ${list.notes && list.notes.length ? list.notes.length : ''}
-                            </span>
+                            <span class="flex-box-3-push counter"> ${list.incompleteLen || 0} </span>
                         </li>
                     `;
                 }).join('')}
@@ -100,22 +112,21 @@ class ListsView extends AsyncView {
         const tagsLenMap = {};
 
         const tags = notes.reduce((res, note) => {
+            const localTags = [];
             const newTags = note.title.split(' ').filter(word => {
                 const isTag = word.startsWith('#');
-
-                if (word === '#focus' && !note.completed) {
-                    incObjProp(tagsLenMap, word);
-                }
 
                 if (!isTag) {
                     return false;
                 }
 
+                localTags.push(word);
+
                 return !res.includes(word);
             });
 
             if (!note.completed) {
-                newTags.forEach(tag => {
+                localTags.forEach(tag => {
                     incObjProp(tagsLenMap, tag);
                 });
             }
@@ -125,7 +136,7 @@ class ListsView extends AsyncView {
             }
 
             return res;
-        }, ['#focus']).map(tag => {
+        }, []).map(tag => {
             return {
                 title: tag.substring(1),
                 count: tagsLenMap[tag] || 0,

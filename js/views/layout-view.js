@@ -253,9 +253,7 @@ class LayoutView extends AsyncView {
                 <div class="flex-box-3-col-1">
 
                     <div class="side-bar box-16">
-                        <div class="side-bar-header">
-                            Orglist
-                        </div>
+                        <div class="side-bar-header"> Orglist </div>
                         <div class="side-bar-content">
                             <div id="lists"></div>
                         </div>

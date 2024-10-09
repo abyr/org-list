@@ -14,7 +14,7 @@ class LastBarView extends View {
     postRender() {
         if (this.note) {
             this.noteDetailsView = new NoteDetailsView({
-                element:  this.element.querySelector('.last-bar-content')
+                element: this.element.querySelector('.last-bar-content')
             });
 
             this.noteDetailsView.setNote(this.note);

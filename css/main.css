@@ -1,29 +1,60 @@
 :root {
-    --main-bg-color: #eeeeee;
-    --main-bg-light-color: #f6f6f6;
-    --main-text-color: #252422ff;
-    --main-text-light-color: #9a9a9a;
-    --main-alert-bg: #fec1ba;
-    --main-hover-bg: #e1e2e3;
+    --theme-color-nature-bg-1: #ffffff;
+    --theme-color-nature-bg-2: #f6f6f6;
+    --theme-color-nature-1: #fec1ba;
+    --theme-color-nature-2: #f6f6f6;
+    --theme-color-nature-3: #bfa5a2;
+    --theme-color-nature-4: #bfcc9f;
+    --theme-color-nature-5: #89966b;
+    --theme-color-nature-6: #252422ff;
+
+    --theme-color-choko-bg-1: #252422;
+    --theme-color-choko-bg-2: #41413a;
+    --theme-color-choko-1: #b14a3d;
+    --theme-color-choko-2: #fff9ec;
+    --theme-color-choko-3: #5c6156;
+    --theme-color-choko-4: #4b7068;
+    --theme-color-choko-5: #80b6ab;
+    --theme-color-choko-6: #def6f1;
 
     --main-font-size: 16px;
-
     --main-box-padding: 16px;
+    --scale-ratio: 1.2;
 }
 html {
     font-family: sans-serif;
+    height: -webkit-fill-available;    
+}
 
+body {
+    --main-bg-color: var(--theme-color-nature-bg-1);
+    --main-bg-light-color: var(--theme-color-nature-bg-2);
+    --main-text-color: var(--theme-color-nature-6);
+    --main-text-light-color: var(--theme-color-nature-3);
+    --main-alert-bg: var(--theme-color-nature-1);
+    --main-hover-bg: var(--theme-color-nature-4);
+    --main-logo-bg: var(--theme-color-nature-4);
+    --main-active-bg: var(--theme-color-nature-5);
+    --main-input-bg: var(--theme-color-nature-2);
+}
+
+body.dark {
+    --main-bg-color: var(--theme-color-choko-bg-1);
+    --main-bg-light-color: var(--theme-color-choko-bg-2);
+    --main-text-color: var(--theme-color-choko-6);
+    --main-text-light-color: var(--theme-color-choko-3);
+    --main-alert-bg: var(--theme-color-choko-1);
+    --main-hover-bg: var(--theme-color-choko-4);
+    --main-logo-bg: var(--theme-color-choko-4);
+    --main-active-bg: var(--theme-color-choko-5);
+    --main-input-bg: var(--theme-color-choko-2);
+}
+
+body {    
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
 }
-body.theme-bright {
-    background-color: var(--main-bg-color);
-    color: var(--main-text-color);
-}
-body.theme-warm {
-    background-color: var(--main-bg-color);
-    color: var(--main-text-color);
-}
+
 body {
     margin: 0;
     padding: 0;
@@ -44,14 +75,48 @@ button {
     font-size: 0.8rem;
     border: 1px solid var(--main-text-color);
     cursor: pointer;
+    color: var(--main-text-color);
+    background-color: var(--main-bg-light-color);
 }
 button.delete {
     background-color: var(--main-alert-bg);
+}
+button.star {
+    background-color: var(--main-bg-light-color);
 }
 button.star:hover,
 button.starred {
     font-weight: bold;
 }
+
+button#delete-completed {
+    background-color: var(--main-alert-bg);
+}
+
+input[type="checkbox"] {
+    display: grid;
+    place-content: center;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 1em;
+    height: 1em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--main-active-bg);
+}
+
+input[type="checkbox"]:checked::before {
+    width: 0.8em;
+    height: 0.8em;
+    transform: scale(var(--scale-ratio));
+}
+
+input[type="text"] {
+    background-color: var(--main-input-bg);
+}
+
 
 #org-list {
     font-size: var(--main-font-size);
@@ -108,6 +173,12 @@ button.starred {
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    font-family: monospace;
+    background: var(--main-logo-bg);
+    color: black;
+    font-weight: bold;
+    justify-content: center;
+    padding: 4px 0;
 }
 .side-bar-content {
     display: flex;
@@ -197,6 +268,19 @@ select {
 
 /* Custom */
 
+.list-item:nth-child(odd) {
+    background-color: var(--main-bg-light-color);
+}
+.tag-item:nth-child(odd) {
+    background-color: var(--main-bg-light-color);
+}
+.list-item:hover {
+    background-color: var(--main-hover-bg);
+}
+.tag-item:hover {
+    background-color: var(--main-hover-bg);
+}
+
 .add-list-box .add-list-input {
     padding: 0.2em;
     box-sizing: border-box;
@@ -217,9 +301,13 @@ li.notes-item {
 .note {
     display: flex;
 }
+.note:nth-child(odd) {
+    background-color: var(--main-bg-color);
+}
 .note:hover {
     background-color: var(--main-hover-bg);
 }
+
 .note .headline {
     flex: 0 1 auto;
     overflow: hidden;
@@ -237,11 +325,14 @@ li.notes-item {
     text-decoration: line-through;
 }
 .toggle-completed {
-    margin-right: 8px;
+    margin: 8px 16px 0 8px;
+    -moz-transform: scale(var(--scale-ratio));
+    -webkit-transform: scale(var(--scale-ratio));
+    transform: scale(var(--scale-ratio));
 }
 
 .counter {
-    color: var(--main-text-light-color);
+    color: var(--main-text-color);
 }
 
 .headline-text,

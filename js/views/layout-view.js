@@ -21,7 +21,7 @@ class LayoutView extends AsyncView {
 
         this.element = element;
 
-        messageBus.subscribe('note:updated', this.refresh.bind(this));
+        messageBus.subscribe('note:updated', this.refreshOnUpdate.bind(this));
         messageBus.subscribe('tag:selected', this.saveFilter.bind(this));
         messageBus.subscribe('list:selected', this.showList.bind(this));
     }
@@ -368,13 +368,15 @@ class LayoutView extends AsyncView {
             if (this.list) {
                 await this.updateListWithNote(this.list.id, noteId);
 
-                this.notes = null;
+                // this.notes = null;
 
-                await this.showList({id: this.list.id });
+                // await this.showList({id: this.list.id });
 
             } else {
-                await this.refresh();
+                // await this.refresh();
             }
+
+            this.refreshOnUpdate();
         }
     }
 
@@ -477,6 +479,8 @@ class LayoutView extends AsyncView {
                 ''
         });
 
+        this.notes = notes;
+
         return notes;
     }
 
@@ -513,6 +517,21 @@ class LayoutView extends AsyncView {
         await listsRepository.delete(id);
 
         await this.resetFilter();
+    }
+
+    async refreshOnUpdate() {
+        if (this.list) {
+            await this.showList({ id: this.list.id });
+
+        } else if (this.staticList) {
+            await this.showList({ id: this.staticList.id });
+
+        } else if (this.filter) {
+            await this.saveFilter(this.filter);
+
+        } else {
+            await this.saveFilter(null);
+        }
     }
 
     async refresh() {

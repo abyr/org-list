@@ -301,6 +301,9 @@ li.notes-item {
 .note {
     display: flex;
 }
+.note.starred {
+    font-weight: bold;
+}
 .note:nth-child(odd) {
     background-color: var(--main-bg-color);
 }
@@ -338,6 +341,7 @@ li.notes-item {
 .headline-text,
 .list-btn,
 .tag-btn {
+    word-break: break-all;
     cursor: pointer;
 }
 .tag-item {

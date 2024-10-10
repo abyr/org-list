@@ -27,7 +27,7 @@ class NotesView extends View {
             <ul class="notes-list-box">
                 ${notes.map(x => {
                     return `
-                        <li class="notes-item note" id="note-${x.id}"></li>
+                        <li class="notes-item note ${x.starred ? 'starred' : ''}" id="note-${x.id}"></li>
                     `;
                 }).join('')}
             </ul>

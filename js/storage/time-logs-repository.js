@@ -1,12 +1,11 @@
 import Repository from './repository.js';
-import NotesStoreAdapter from './notes-adapter.js';
+import TimeLogsStoreAdapter from './time-logs-adapter.js';
 import messageBus from '../classes/shared-message-bus.js';
 
 let instance;
-let notesAdapter;
+let timeLogsAdapter;
 
-class NotesRepository extends Repository {
-
+class TimeLogsRepository extends Repository {
     constructor() {
         if (instance) {
             throw new Error("Instance already exists");
@@ -16,19 +15,18 @@ class NotesRepository extends Repository {
 
         instance = this;
 
-        notesAdapter = new NotesStoreAdapter();
+        timeLogsAdapter = new TimeLogsStoreAdapter();
+        this.setAdapter(timeLogsAdapter);
 
-        this.setAdapter(notesAdapter);
-
-        messageBus.subscribe('note:updated', this.invalidateCacheData.bind(this));
+        messageBus.subscribe('timeLogs:updated', this.invalidateCacheData.bind(this));
     }
 
     /**
-     * @param {Object} args
-     * @param {string} args.text
+     * @param {Number} noteId
+     * @param {Array} ids
      * @returns {Promise<Repository.adapter.getAll|*[]>}
      */
-    async search({ text }) {
+    async getNote({ noteId }) {
         const allNotes = await this.getAll();
 
         if (!text) {
@@ -43,10 +41,9 @@ class NotesRepository extends Repository {
 
         return filtered;
     }
-
 }
 
-let notesRepositoryInstance = Object.freeze(new NotesRepository());
+let timeLogsRepositoryInstance = Object.freeze(new TimeLogsRepository());
 
 
-export default notesRepositoryInstance;
+export default timeLogsRepositoryInstance;

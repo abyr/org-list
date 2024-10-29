@@ -19,6 +19,13 @@ const schemaList = [{
         name: 'preferenceId',
         fields: [ 'id' ]
     }]
+}, {
+    name: 'timeLogs',
+    keyPath: 'id',
+    indexes: [{
+        name: 'logId',
+        fields: [ 'id' ]
+    }]
 }
 ];
 

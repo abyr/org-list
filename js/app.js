@@ -1,6 +1,6 @@
 import LayoutView from './views/layout-view.js';
 import sharedState from "./classes/shared-state.js";
-import PreferencesStoreAdapter from './storage/preferences-adapter.js';
+import preferencesRepository from './storage/preferences-repository.js';
 
 sharedState.setProp('debug', true);
 
@@ -15,17 +15,25 @@ const onWindowLoad = async () => {
 };
 
 async function setLastScheme() {
-    const preferrencesStoreAdapter = new PreferencesStoreAdapter();
+    const theme = await preferencesRepository.get('theme');
 
-    await preferrencesStoreAdapter.connect();
+    if (theme && theme.value === 'dark') {
+        setDarkTheme();
 
-    const preferences = await preferrencesStoreAdapter.getAll();
+    } else if (theme && theme.value === 'light') {
+        setLightTheme();
 
-    if (preferences.theme === 'dark') {
-        document.querySelector('body').classList.add('dark');
     } else {
-        document.querySelector('body').classList.remove('dark');
+        setLightTheme();
     }
+}
+
+function setLightTheme() {
+    document.querySelector('body').classList.remove('dark');
+}
+
+function setDarkTheme() {
+    document.querySelector('body').classList.add('dark');
 }
 
 window.addEventListener("load", onWindowLoad);

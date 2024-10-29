@@ -8,6 +8,13 @@ class Repository {
         this.adapter = adapter;
     }
 
+    async lazyInit() {
+        if (!this.cacheMap['all']) {
+            await this.init();
+            this.cacheMap['all'] = await this.adapter.getAll();
+        }
+    }
+
     async init() {
         this.invalidateCache();
 
@@ -15,21 +22,18 @@ class Repository {
     }
 
     async get(id) {
-        const numId = Number(id);
+        const strictId = this.getStrictId(id);
 
-        if (!this.cacheMap[numId]) {
+        if (!this.cacheMap[strictId]) {
             await this.init();
-            this.cacheMap[numId] = await this.adapter.get(numId);
+            this.cacheMap[strictId] = await this.adapter.get(strictId);
         }
 
-        return this.cacheMap[numId];
+        return this.cacheMap[strictId];
     }
 
     async getAll() {
-        if (!this.cacheMap['all']) {
-            await this.init();
-            this.cacheMap['all'] = await this.adapter.getAll();
-        }
+        await this.lazyInit();
 
         return this.cacheMap['all'];
     }
@@ -43,14 +47,15 @@ class Repository {
     }
 
     async update(id, data){
-        const res = await this.adapter.put(Number(id), data);
+        await this.lazyInit();
+        const res = await this.adapter.put(this.getStrictId(id), data);
 
         this.invalidateCache();
         return res;
     }
 
     async delete(id){
-        const res = await this.adapter.delete(Number(id));
+        const res = await this.adapter.delete(this.getStrictId(id));
 
         this.invalidateCache();
 
@@ -59,7 +64,7 @@ class Repository {
 
     invalidateCacheData(data) {
         if (data && data.id) {
-            this.cacheMap[Number(data.id)] = null;
+            this.cacheMap[this.getStrictId(data.id)] = null;
         }
     }
 
@@ -68,9 +73,17 @@ class Repository {
             if (id === 'all') {
                 this.cacheMap[id] = null;
             } else {
-                delete this.cacheMap[Number(id)];
+                delete this.cacheMap[this.getStrictId(id)];
             }
         });
+    }
+
+    /**
+     * @param id
+     * @returns {any}
+     */
+    getStrictId(id) {
+        return Number(id);
     }
 }
 

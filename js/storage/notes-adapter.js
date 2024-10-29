@@ -35,9 +35,9 @@ class NotesStoreAdapter extends CacheableAdapter {
     put(id, {
         title,
         description = '',
-        starred= false,
+        starred = false,
         position,
-        completed= false,
+        completed = false,
         createdAt,
     }) {
         return new Promise((resolve, reject) => {

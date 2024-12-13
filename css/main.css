@@ -134,6 +134,9 @@ input[type="text"] {
 .box-v16 {
     padding: var(--main-box-padding) 0;
 }
+.box-h16 {
+    padding: 0 var(--main-box-padding);
+}
 .box-top16 {
     padding: var(--main-box-padding) 0 0 0;
 }
@@ -357,6 +360,17 @@ li.notes-item {
 
 #reset-filter-btn {
     margin-right: 8px;
+}
+
+.time-log-date {
+    color: var(--main-text-color);
+}
+.time-log-date {
+    color: var(--main-text-color);
+}
+.time-log-comment {
+    color: var(--main-text-color);
+    font-style: italic;
 }
 
 

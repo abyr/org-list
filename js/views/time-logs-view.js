@@ -58,21 +58,17 @@ class TimerView extends View {
                     if (x.endAt) {
                         return `
                             <li class="time-log id="${x.id}">
-                                <span class="time-log-date">${this.tsToReadableDate(x.startAt)}</span>
-
-                                <span class="time-log-duration">${this.msToDuration(x.endAt - x.startAt)}</span>
-
-                                <span>${x.comment}</span>
+                                <span class="time-log-date">${this.tsToDate(x.startAt)}</span>
+                                <span class="box-h16 time-log-duration">${this.msToDuration(x.endAt - x.startAt)}</span>
+                                <span class="time-log-comment">${x.comment || '...'}</span>
                             </li>
                         `;
                     }
                     return `
                         <li class="time-log id="${x.id}">
-                            <span class="time-log-date">${this.tsToReadableDate(x.startAt)}</span>
-
-                            <span class="time-log-duration">${this.msToDuration(x.endAt - x.startAt)}</span>
-
-                            <span>${x.comment}</span>
+                            <span class="time-log-date">${this.tsToDate(x.startAt)}</span>
+                            <span class="box-h16 time-log-duration">${this.msToDuration(x.endAt - x.startAt)}</span>
+                            <span class="time-log-comment">${x.comment || '...'}</span>
                         </li>
                     `;
                 }).join('')}
@@ -82,7 +78,19 @@ class TimerView extends View {
         const listBox = this.queue('#time-logs-list');
 
         listBox.innerHTML = html;
+    }
 
+    renderControls() {
+        if (this.started) {
+            this.continuousUpdate();
+
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+
+        } else {
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
     }
 
     async startTimer() {
@@ -92,13 +100,14 @@ class TimerView extends View {
             return;
         }
 
-        const started = await timeLogsRepository.create({
+        const startedId = await timeLogsRepository.create({
             startAt: Date.now(),
             comment: 'testing'
         });
 
-        this.started = started;
+        this.started = await timeLogsRepository.get(startedId);
 
+        this.renderControls();
         this.continuousUpdate();
     }
 
@@ -113,6 +122,7 @@ class TimerView extends View {
 
         this.stopUpdates();
 
+        this.renderControls();
         this.renderLogs();
     }
 
@@ -155,13 +165,13 @@ class TimerView extends View {
 
     }
 
-    tsToReadableDate(ts) {
+    tsToDate(ts) {
         const date = new Date(ts);
 
         return date.toISOString().substring(0, 10);
     }
 
-    tsToReadableTime(ts) {
+    tsToTime(ts) {
         const date = new Date(ts);
 
         return date.toISOString().substring(11, 19);

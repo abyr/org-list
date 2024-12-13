@@ -22,25 +22,29 @@ class TimeLogsRepository extends Repository {
     }
 
     /**
-     * @param {Number} noteId
-     * @param {Array} ids
+     * @param {Object} args
+     * @param {string} args.text
      * @returns {Promise<Repository.adapter.getAll|*[]>}
      */
-    async getNote({ noteId }) {
-        const allNotes = await this.getAll();
+    async search({ startAt, endAt }) {
+        const allList = await this.getAll();
 
         if (!text) {
-            return allNotes;
+            return allList;
         }
 
         let filtered = [];
 
-        if (text) {
-            filtered = allNotes.filter(x => x.title.indexOf(text) > -1);
+        if (startAt) {
+            filtered = allList.filter(x => x.startAt > startAt);
+        }
+        if (endAt) {
+            filtered = allList.filter(x => x.startEnd && x.startEnd < endAt);
         }
 
         return filtered;
     }
+
 }
 
 let timeLogsRepositoryInstance = Object.freeze(new TimeLogsRepository());

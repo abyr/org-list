@@ -4,10 +4,10 @@ import MiddleBarHeader from "./middle-bar-header.js";
 import LastBarView from "./last-bar-view.js";
 import NotesView from './notes-view.js';
 import IncompleteNotesView from './incomplete-notes-view.js';
-import ExportImportView from "./export-import-view.js";
 import ListsView from "./lists-view.js";
 import Collapsible from './components/collapsible.js';
 import staticLists from '../storage/static-lists.js';
+import FooterView from "./footer-view.js";
 
 import messageBus from '../classes/shared-message-bus.js';
 import notesRepository from '../storage/notes-repository.js';
@@ -40,7 +40,7 @@ class LayoutView extends AsyncView {
         await this.renderCompletedNotes();
 
         if (!this.filter) {
-            this.renderExportImport();
+            this.renderFooter();
         }
 
         const collapsibleList = document.querySelectorAll('.collapsible-header');
@@ -237,11 +237,11 @@ class LayoutView extends AsyncView {
         return notes.filter(x => x.completed);
     }
 
-    renderExportImport() {
-        this.expImpView = new ExportImportView({
-            element: document.getElementById('export-import')
+    renderFooter() {
+        this.footerView = new FooterView({
+            element: document.getElementById('footer')
         });
-        this.expImpView.render();
+        this.footerView.render();
     }
 
     async getAsyncHtml() {
@@ -342,9 +342,7 @@ class LayoutView extends AsyncView {
                 </div>
             </div>
 
-            <div class="box-16">
-                <div id="export-import"></div>
-            </div>
+            <div id="footer" class="box-16"></div>
         `;
     }
 
@@ -545,9 +543,9 @@ class LayoutView extends AsyncView {
     cleanup() {
         super.cleanup();
 
-        if (this.expImpView) {
-            this.expImpView.destroy();
-            this.expImpView = null;
+        if (this.footerView) {
+            this.footerView.destroy();
+            this.footerView = null;
         }
         if (this.completedView) {
             this.completedView.destroy();
@@ -576,7 +574,7 @@ class LayoutView extends AsyncView {
         messageBus.unsubscribe('tag:selected', this.saveFilter);
         messageBus.unsubscribe('list:selected', this.showList);
 
-        this.expImpView = null;
+        this.footerView = null;
         this.completedView = null;
         this.incompleteView = null;
         this.tagsView = null;

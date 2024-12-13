@@ -3,7 +3,6 @@ import CacheableAdapter from './cachable-adapter.js';
 /**
  * @typedef {{
  *   id: number,
- *   noteId: number,
  *   startAt: number,
  *   endAt: number,
  * }} TimeLogObject
@@ -21,42 +20,31 @@ class TimeLogsStoreAdapter extends CacheableAdapter {
      * @param {Number} id 
      * 
      * @param {Object} [args]
-     * @param {number} [args.noteId]
      * @param {number} [args.startAt]
      * @param {number} [args.endAt]
+     * @param {String} [comment]
      * @returns 
      */
     put(id, {
-        noteId,
         startAt,
         endAt = null,
+        comment = ''
     }) {
         return new Promise((resolve, reject) => {
             this.invalidateCache();
 
-            if (endAt !== null) {
-                return reject();
-            }
-
             /**
              * @type {TimeLogObject}
              */
-            const timeLogObject = { noteId, startAt, endAt };
+            const timeLogObject = { id, startAt, endAt, comment };
 
             const isNew = !id;
 
             if (isNew) {
-                if (!noteId) {
-                    return reject('noteId is required');
-                }
-
                 if (!startAt) {
                     return reject('startAt is required');
                 }
-
-            } else if (!endAt) {
-                return reject('endAt is required');
-            }
+            } 
 
             this.idba.putRecord(this.name, timeLogObject).then(res => {
                 resolve(res);

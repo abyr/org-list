@@ -78,6 +78,10 @@ button {
     color: var(--main-text-color);
     background-color: var(--main-bg-light-color);
 }
+button:disabled {
+    color: var(--main-text-light-color);
+    border-color: var(--main-text-light-color);
+}
 button.delete {
     background-color: var(--main-alert-bg);
 }

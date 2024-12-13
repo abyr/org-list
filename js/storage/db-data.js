@@ -29,7 +29,7 @@ const schemaList = [{
 }
 ];
 
-const version = 1;
+const version = 2;
 
 const dbData = {
     name: 'org-list',

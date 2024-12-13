@@ -23,7 +23,8 @@ class TimeLogsRepository extends Repository {
 
     /**
      * @param {Object} args
-     * @param {string} args.text
+     * @param {string} args.startAt
+     * @param {string} args.endAt
      * @returns {Promise<Repository.adapter.getAll|*[]>}
      */
     async search({ startAt, endAt }) {

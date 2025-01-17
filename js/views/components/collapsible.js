@@ -10,7 +10,7 @@
  *
  * const collapsibleList = document.querySelectorAll('.collapsible-header');
  *
- * collapsibleList.forEach(el => new Collapsible(el));
+ * collapsibleList.forEach(el => new Collapsible(el, {}));
  * ```
  *
  * ```html
@@ -38,8 +38,19 @@
  */
 class Collapsible {
 
-    constructor(element) {
+    /**
+     * 
+     * @param {Element} element 
+     * @param {Object} settings 
+     * @param {function} [settings.onToggle]
+     * @returns 
+     */
+    constructor(element, settings = {}) {
         this.element = element;
+
+        if (settings.onToggle) {
+            this.onToggle = settings.onToggle;
+        }
 
         this.buttonEl = this.element.querySelector('button[aria-expanded]');
 
@@ -73,6 +84,8 @@ class Collapsible {
         } else {
             this.contentEl.setAttribute('hidden', '');
         }
+
+        this.onToggle(isExpanded);
     }
 
 }

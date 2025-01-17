@@ -12,6 +12,7 @@ import FooterView from "./footer-view.js";
 import messageBus from '../classes/shared-message-bus.js';
 import notesRepository from '../storage/notes-repository.js';
 import listsRepository from "../storage/lists-repository.js";
+import preferencesRepository from "../storage/preferences-repository.js";
 
 
 class LayoutView extends AsyncView {
@@ -43,10 +44,12 @@ class LayoutView extends AsyncView {
             this.renderFooter();
         }
 
-        const collapsibleList = document.querySelectorAll('.collapsible-header');
+        const completedNotesHeader = this.queue('#completed-notes-header');
 
-        if (collapsibleList) {
-            collapsibleList.forEach(el => new Collapsible(el));
+        if (completedNotesHeader) {
+            new Collapsible(completedNotesHeader, {
+                onToggle: this.updateShowCompletedPreference
+            });
         }
 
         if (this.filter || this.list || this.staticList) {
@@ -245,6 +248,9 @@ class LayoutView extends AsyncView {
     }
 
     async getAsyncHtml() {
+        const showCompletedPreference = await preferencesRepository.get('show-completed');
+        const showCompleted = showCompletedPreference && showCompletedPreference.value;
+
         const completedNotes = await this.getCompletedNotes();
 
         return `
@@ -307,15 +313,15 @@ class LayoutView extends AsyncView {
     
                                 ${completedNotes.length ? `
                                     <div class="collapsible">
-                                        <div class="collapsible-header">
+                                        <div class="collapsible-header" id="completed-notes-header">
                                             <button type="button"
-                                                aria-expanded="true"
+                                                aria-expanded="${showCompleted ? 'true' : 'false'}"
                                                 class="collapsible-trigger"
                                                 aria-controls="completed-notes-section-toggle"
                                                 id="completed-notes-section"
                                             >
                                                 <span class="collapsible-title">
-                                                    Completed notes
+                                                    Completed notes (${completedNotes.length})
                                                     <span class="collapsible-icon"></span>
                                                 </span>
                                             </button>
@@ -323,8 +329,9 @@ class LayoutView extends AsyncView {
                                         <div id="completed-notes-section-toggle"
                                              role="region"
                                              aria-labelledby="completed-notes-section"
-                                             class="collapsible-content">
-        
+                                             class="collapsible-content"
+                                             aria-expanded="${showCompleted ? 'true' : 'false'}"
+                                        >        
                                              <div id="completed-notes"></div>
                                         </div>
                                     </div>
@@ -515,6 +522,10 @@ class LayoutView extends AsyncView {
         await listsRepository.delete(id);
 
         await this.resetFilter();
+    }
+
+    async updateShowCompletedPreference(isExpanded) {
+        await preferencesRepository.update('show-completed', isExpanded);
     }
 
     async refreshOnUpdate() {

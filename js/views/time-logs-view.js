@@ -21,7 +21,10 @@ class TimerView extends View {
             <div class="timer-controls">
                 <button id="start-timer" aria-label="Start">START</button>
                 <button id="stop-timer" aria-label="Stop">STOP</button>
+
+                <label for="time-log-start-comment" class="box-h16">Comment</label>
                 <input type=text" id="time-log-start-comment" value="" />
+
             </div>
             <div class="box-16" id="time-logs-list"></div>
         `;

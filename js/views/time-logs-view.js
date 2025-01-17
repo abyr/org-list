@@ -1,9 +1,18 @@
 import View from "../classes/view.js";
+import messageBus from '../classes/shared-message-bus.js';
 import timeLogsRepository from "../storage/time-logs-repository.js";
 
 const UPDATE_INTERVAL = 500;
+const DEFAULT_COMMENT = 'working';
 
 class TimerView extends View {
+
+    constructor({ element }) {
+        super({ element });
+
+        messageBus.subscribe('timeLog:updated', this.renderLogs.bind(this));
+    }
+
     getHtml() {
         return `
             <div class="box-v16">
@@ -11,7 +20,8 @@ class TimerView extends View {
             </div>
             <div class="timer-controls">
                 <button id="start-timer" aria-label="Start">START</button>
-                <button id="stop-timer" aria-label="Stop">STOP</button>            
+                <button id="stop-timer" aria-label="Stop">STOP</button>
+                <input type=text" id="time-log-start-comment" value="" />
             </div>
             <div class="box-16" id="time-logs-list"></div>
         `;
@@ -34,43 +44,34 @@ class TimerView extends View {
 
         timeLogs.sort(this.timeLogsSorter);
 
-        console.log('time logs', timeLogs);
-
         this.started = timeLogs.find(x => x.startAt > 0 && !x.endAt);
 
         const startBtn = this.queue('#start-timer');
         const stopBtn = this.queue('#stop-timer');
+        const commentEl = this.queue('#time-log-start-comment');
 
         if (this.started) {
             this.continuousUpdate();
 
             startBtn.disabled = true;
             stopBtn.disabled = false;
+            commentEl.disabled = true;
+            commentEl.value = this.started.comment;
 
         } else {
             startBtn.disabled = false;
             stopBtn.disabled = true;
+            commentEl.disabled = false;
+            commentEl.value = DEFAULT_COMMENT;
         }
 
         const html = timeLogs.length ? `
             <ul class="time-logs-box">
                 ${timeLogs.map(x => {
                     if (x.endAt) {
-                        return `
-                            <li class="time-log id="${x.id}">
-                                <span class="time-log-date">${this.tsToDate(x.startAt)}</span>
-                                <span class="box-h16 time-log-duration">${this.msToDuration(x.endAt - x.startAt)}</span>
-                                <span class="time-log-comment">${x.comment || '...'}</span>
-                            </li>
-                        `;
+                        return this.renderFinishedTimeLog(x);
                     }
-                    return `
-                        <li class="time-log id="${x.id}">
-                            <span class="time-log-date">${this.tsToDate(x.startAt)}</span>
-                            <span class="box-h16 time-log-duration">${this.msToDuration(x.endAt - x.startAt)}</span>
-                            <span class="time-log-comment">${x.comment || '...'}</span>
-                        </li>
-                    `;
+                    return this.renderStartedTimeLog(x);
                 }).join('')}
             </ul>
         ` : `No time logs`;
@@ -78,19 +79,74 @@ class TimerView extends View {
         const listBox = this.queue('#time-logs-list');
 
         listBox.innerHTML = html;
+
+        const deleteBtnEls = this.element.querySelectorAll('.delete');
+
+        Array.from(deleteBtnEls).forEach(btn => {
+            this.subscribeElementEvent(btn, 'click', this.deleteTimeLog.bind(this));
+        });
+    }
+
+    renderStartedTimeLog(timeLog) {
+        return `
+            <li class="time-log id="${timeLog.id}">
+                <span class="time-log-date">${this.tsToDate(timeLog.startAt)}</span>
+                <span class="box-h16 time-log-duration">Started at ${this.tsToTime(timeLog.startAt)}</span>
+                <span class="time-log-comment">${timeLog.comment || '...'}</span>
+            </li>
+        `;
+    }
+
+    renderFinishedTimeLog(timeLog) {
+        return `
+            <li class="time-log id="${timeLog.id}">
+                <span class="time-log-date">${this.tsToDate(timeLog.startAt)}</span>
+                <span class="box-h16 time-log-duration">${this.msToDuration(timeLog.endAt - timeLog.startAt)}</span>
+                <span class="time-log-comment">${timeLog.comment || '...'}</span>
+
+                <button class="delete" data-id="${timeLog.id}" aria-label="Delete">✕</button>
+            </li>
+        `;
     }
 
     renderControls() {
+        const startBtn = this.queue('#start-timer');
+        const stopBtn = this.queue('#stop-timer');
+        const commentEl = this.queue('#time-log-start-comment');
+
+        
         if (this.started) {
-            this.continuousUpdate();
+            this.continuousUpdate();    
 
             startBtn.disabled = true;
             stopBtn.disabled = false;
+            commentEl.disabled = true;
+            commentEl.value = this.started.comment;
 
         } else {
             startBtn.disabled = false;
             stopBtn.disabled = true;
+            commentEl.disabled = false;
+            commentEl.value = DEFAULT_COMMENT;
         }
+    }
+
+    async deleteTimeLog(event) {
+        if (!window.confirm('Delete log?')) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const el = event.currentTarget;
+        const logId = el.dataset.id;
+
+        await timeLogsRepository.delete(Number(logId));
+
+        messageBus.publish('timeLog:updated', {
+            action: 'delete',
+            id: logId,
+        });
     }
 
     async startTimer() {
@@ -100,9 +156,12 @@ class TimerView extends View {
             return;
         }
 
+        const commentEl = this.queue('#time-log-start-comment');
+        const comment = commentEl && commentEl.value ;
+
         const startedId = await timeLogsRepository.create({
             startAt: Date.now(),
-            comment: 'testing'
+            comment: comment || ''
         });
 
         this.started = await timeLogsRepository.get(startedId);

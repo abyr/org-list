@@ -345,6 +345,10 @@ li.notes-item {
     color: var(--main-text-color);
 }
 
+.list-btn-icon {
+    margin-right: 4px;
+}
+
 .headline-text,
 .list-btn,
 .tag-btn {

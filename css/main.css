@@ -84,6 +84,7 @@ button:disabled {
 }
 button.delete {
     background-color: var(--main-alert-bg);
+    margin-left: 4px
 }
 button.star {
     background-color: var(--main-bg-light-color);
@@ -323,10 +324,15 @@ li.notes-item {
     overflow: hidden;
     display: flex;
     align-items: baseline;
+    width: auto;
 }
 .note .controls {
     margin-left: auto;
     flex: 0 0 auto;
+    display: flex;
+    height: fit-content;    
+    justify-content: flex-end;
+    min-width: 56px;
 }
 .note .completed label {
     text-decoration: line-through;

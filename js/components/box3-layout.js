@@ -3,15 +3,16 @@ import MiddleBarNotes from './middle-bar-notes.js';
 import MiddleBarControls from './middle-bar-controls.js';
 import listsRepository from '../storage/lists-repository.js';
 import notesRepository from '../storage/notes-repository.js';
+import messageBus from '../classes/shared-message-bus.js';
 
 export default {
-   
+
     data() {
         return {
             lists: [],
             notes: [],
             search: '',
-        }
+        };
     },
 
     components: {
@@ -19,7 +20,7 @@ export default {
         MiddleBarNotes,
         MiddleBarControls,
     },
-    
+
     template: `
 <div class="flex-box-3">
     <div class="flex-box-3-col-1">
@@ -53,6 +54,8 @@ export default {
     `,
 
     mounted() {
+        messageBus.subscribe('notes:updated', this.updateNotes.bind(this));
+
         this.getLists();
         this.getNotes();
     },
@@ -71,6 +74,10 @@ export default {
             const lists = await listsRepository.getAll();
 
             this.lists = lists;
+        },
+
+        async updateNotes() {
+            await this.getNotes();
         },
 
         async getNotes() {

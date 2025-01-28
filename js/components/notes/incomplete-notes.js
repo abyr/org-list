@@ -1,4 +1,3 @@
-import preferencesRepository from "../../storage/preferences-repository.js";
 import NoteItem from './note-item.js';
 
 export default {

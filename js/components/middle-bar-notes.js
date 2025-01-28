@@ -20,20 +20,14 @@ export default {
 
         incompleteNotes() {
             const allNotes = this.allNotes;
-
             const incompleteNotes = allNotes.filter(x => !x.completed);
-
-            console.log('incomplete notes len', incompleteNotes.length);
 
             return incompleteNotes;
         },
 
         completedNotes() {
             const allNotes = this.allNotes;
-
             const completedNotes = allNotes.filter(x => !!x.completed);
-
-            console.log('completed notes len', completedNotes.length);
 
             return completedNotes;
         },

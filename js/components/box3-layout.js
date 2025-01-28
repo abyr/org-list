@@ -37,10 +37,10 @@ export default {
     <div class="flex-box-3-col-2">
         <div class="middle-bar box-16">
             <div class="middle-bar-header">
-                <MiddleBarControls :notes="notes" />
+                <MiddleBarControls :notes="sortedNotes" />
             </div>
             <div class="middle-bar-content box-top16">
-                <MiddleBarNotes :search="search" :notes="notes" />
+                <MiddleBarNotes :search="search" :notes="sortedNotes" />
             </div>
         </div>
     </div>
@@ -57,6 +57,14 @@ export default {
         this.getNotes();
     },
 
+    computed: {
+        sortedNotes() {
+            return this.notes
+                .sort(sortByTimeDESC)
+                .sort(sortByStarredASC)
+        }
+    },
+
     methods: {
 
         async getLists() {
@@ -68,8 +76,20 @@ export default {
         async getNotes() {
             const notes = await notesRepository.getAll();
 
-            this.notes = notes;
+            this.notes = notes.sort(sortByTimeDESC)
+                .sort(sortByStarredASC)
         }
     }
 
 };
+
+function sortByTimeDESC (a, b) {
+    const aTime = a.updatedAt || a.createdAt;
+    const bTime = b.updatedAt || b.createdAt;
+
+    return bTime - aTime;
+}
+
+function sortByStarredASC (a, b) {
+    return (b.starred ? 1 : 0) - (a.starred ? 1 : 0);
+}

@@ -14,12 +14,28 @@ export default {
     },
 
     computed: {
+        allNotes() {
+            return this.notes.filter(x => !x.deleted);
+        },
+
         incompleteNotes() {
-            return this.notes.filter(x => !x.completed);
+            const allNotes = this.allNotes;
+
+            const incompleteNotes = allNotes.filter(x => !x.completed);
+
+            console.log('incomplete notes len', incompleteNotes.length);
+
+            return incompleteNotes;
         },
 
         completedNotes() {
-            return this.notes.filter(x => x.completed);
+            const allNotes = this.allNotes;
+
+            const completedNotes = allNotes.filter(x => !!x.completed);
+
+            console.log('completed notes len', completedNotes.length);
+
+            return completedNotes;
         },
     },
 
@@ -38,9 +54,13 @@ export default {
             <span> {{ search }}</span>
     </div>
 
-    <IncompleteNotes :notes="incompleteNotes" />
+    <div class="incomplete-notes">
+        <IncompleteNotes :notes="incompleteNotes" />
+    </div>
 
-    <CompletedNotes :notes="completedNotes" />
+    <div class="completed-notes" v-if="completedNotes.length">
+        <CompletedNotes :notes="completedNotes" />
+    </div>
 </div>
     `,
 

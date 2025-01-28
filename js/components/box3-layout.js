@@ -1,5 +1,3 @@
-import { ref } from 'vue';
-
 import SideBarLists from './side-bar-lists.js';
 import MiddleBarNotes from './middle-bar-notes.js';
 import listsRepository from '../storage/lists-repository.js';
@@ -52,6 +50,7 @@ export default {
 
     mounted() {
         this.getLists();
+        this.getNotes();
     },
 
     methods: {

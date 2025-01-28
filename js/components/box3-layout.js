@@ -1,5 +1,6 @@
 import SideBarLists from './side-bar-lists.js';
 import MiddleBarNotes from './middle-bar-notes.js';
+import MiddleBarControls from './middle-bar-controls.js';
 import listsRepository from '../storage/lists-repository.js';
 import notesRepository from '../storage/notes-repository.js';
 
@@ -16,6 +17,7 @@ export default {
     components: {
         SideBarLists,
         MiddleBarNotes,
+        MiddleBarControls,
     },
     
     template: `
@@ -34,7 +36,9 @@ export default {
     </div>
     <div class="flex-box-3-col-2">
         <div class="middle-bar box-16">
-            <div class="middle-bar-header"></div>
+            <div class="middle-bar-header">
+                <MiddleBarControls :notes="notes" />
+            </div>
             <div class="middle-bar-content box-top16">
                 <MiddleBarNotes :search="search" :notes="notes" />
             </div>

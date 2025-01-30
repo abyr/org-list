@@ -1,3 +1,4 @@
+import messageBus from '../../classes/shared-message-bus.js';
 import notesRepository from '../../storage/notes-repository.js';
 
 export default {
@@ -5,6 +6,41 @@ export default {
     props: {
         note: Object,
     },
+
+    template: `
+<div class="headline" :class="{ completed: !!note.completed }" @click="openNoteDetails">
+    <input type="checkbox"
+        :aria-labelledby="'toggle-completed-' + note.id + '-label'"
+        :id="'toggle-completed-' + note.id"
+        class="toggle-completed"
+        :data-id="note.id"
+        value="note.completed"
+        v-model="note.completed"
+        @click.prevent="toggleCompleted"
+    />
+
+    <span class="headline-text"
+        draggable="true"
+        :id="'toggle-completed-' + note.id + '-label'"
+        :data-id="note.id"
+    >{{ note.title }}</span>
+
+</div>
+
+<div class="controls">
+
+    <button v-if="!note.completed"
+        class="star"
+        :class="{ starred: note.starred }"
+        :data-id="note.id"
+        :aria-label="note.starred ? 'Unstar' : 'Star'"
+        v-html="note.starred ? '&starf;' : '&star;'"
+        @click.prevent="toggleStarred"
+    ></button>
+
+    <button class="delete" :data-id="note.id" aria-label="Delete" @click.prevent="deleteNote">✕</button>
+</div>
+    `,
 
     methods: {
         async toggleCompleted() {
@@ -40,41 +76,10 @@ export default {
 
             this.note.deleted = true;
         },
+
+        async openNoteDetails() {
+            messageBus.publish('note:opened', { id: this.note.id });
+        }
     },
-
-    template: `
-<div class="headline" :class="{ completed: !!note.completed }">
-    <input type="checkbox"
-        :aria-labelledby="'toggle-completed-' + note.id + '-label'"
-        :id="'toggle-completed-' + note.id"
-        class="toggle-completed"
-        :data-id="note.id"
-        value="note.completed"
-        v-model="note.completed"
-        @click.prevent="toggleCompleted"
-    />
-
-    <span class="headline-text" 
-        draggable="true"
-        :id="'toggle-completed-' + note.id + '-label'"
-        :data-id="note.id"
-    >{{ note.title }}</span>
-    
-</div>
-
-<div class="controls">
-
-    <button v-if="!note.completed"
-        class="star"
-        :class="{ starred: note.starred }"
-        :data-id="note.id"
-        :aria-label="note.starred ? 'Unstar' : 'Star'"
-        v-html="note.starred ? '&starf;' : '&star;'"
-        @click.prevent="toggleStarred"
-    ></button>
- 
-    <button class="delete" :data-id="note.id" aria-label="Delete" @click.prevent="deleteNote">✕</button>
-</div>
-    `,
 
 }

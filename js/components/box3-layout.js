@@ -1,6 +1,7 @@
 import SideBarLists from './side-bar-lists.js';
 import MiddleBarNotes from './middle-bar-notes.js';
 import MiddleBarControls from './middle-bar-controls.js';
+import NoteDetails from './notes/note-details.js';
 import listsRepository from '../storage/lists-repository.js';
 import notesRepository from '../storage/notes-repository.js';
 import messageBus from '../classes/shared-message-bus.js';
@@ -12,6 +13,7 @@ export default {
             lists: [],
             notes: [],
             search: '',
+            noteId: 0,
         };
     },
 
@@ -19,6 +21,7 @@ export default {
         SideBarLists,
         MiddleBarNotes,
         MiddleBarControls,
+        NoteDetails,
     },
 
     template: `
@@ -45,8 +48,15 @@ export default {
             </div>
         </div>
     </div>
-    <div class="flex-box-3-col-3 hidden">
-        <div class="last-bar box-16"></div>
+    <div class="flex-box-3-col-3" v-if="noteId">
+        <div class="last-bar box-16">
+            <div class="last-bar-header">
+                <button class="close" aria-label="Close" @click="closeNoteDetails">✕</button>
+            </div>
+            <div class="last-bar-content">
+                <NoteDetails :note="openedNote" />
+            </div>
+        </div>
     </div>
 </div>
 
@@ -55,6 +65,7 @@ export default {
 
     mounted() {
         messageBus.subscribe('notes:updated', this.updateNotes.bind(this));
+        messageBus.subscribe('note:opened', this.openNoteDetails.bind(this));
 
         this.getLists();
         this.getNotes();
@@ -65,6 +76,13 @@ export default {
             return this.notes
                 .sort(sortByTimeDESC)
                 .sort(sortByStarredASC)
+        },
+        openedNote() {
+            if (this.noteId) {
+                return this.notes.find(x => x.id === this.noteId);
+            } else {
+                return null;
+            }
         }
     },
 
@@ -85,7 +103,15 @@ export default {
 
             this.notes = notes.sort(sortByTimeDESC)
                 .sort(sortByStarredASC)
-        }
+        },
+
+        openNoteDetails({ id }) {
+            this.noteId = id;
+        },
+
+        closeNoteDetails() {
+            this.noteId = 0;
+        },
     }
 
 };

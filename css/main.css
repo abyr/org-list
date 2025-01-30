@@ -23,7 +23,7 @@
 }
 html {
     font-family: sans-serif;
-    height: -webkit-fill-available;    
+    height: -webkit-fill-available;
 }
 
 body {
@@ -50,7 +50,7 @@ body.dark {
     --main-input-bg: var(--theme-color-choko-2);
 }
 
-body {    
+body {
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
 }
@@ -226,6 +226,17 @@ input[type="text"] {
     flex: 1;
 }
 
+.last-bar-header {
+    align-self: flex-end;
+}
+
+.last-bar-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
 /* Form */
 
 label {
@@ -330,7 +341,7 @@ li.notes-item {
     margin-left: auto;
     flex: 0 0 auto;
     display: flex;
-    height: fit-content;    
+    height: fit-content;
     justify-content: flex-end;
     min-width: 56px;
 }

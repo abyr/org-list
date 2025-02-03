@@ -24,10 +24,6 @@ export default {
 </div>
     `,
 
-    mounted() {
-        console.log('note:', this.note);
-    },
-
     computed: {
         createdLocale() {
             return this.note.createdAt ?

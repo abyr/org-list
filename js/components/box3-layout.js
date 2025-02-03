@@ -14,6 +14,8 @@ export default {
             notes: [],
             search: '',
             noteId: 0,
+            listId: 0,
+            staticListId: 0,
         };
     },
 
@@ -67,6 +69,11 @@ export default {
         messageBus.subscribe('notes:updated', this.updateNotes.bind(this));
         messageBus.subscribe('note:opened', this.openNoteDetails.bind(this));
 
+        messageBus.subscribe('list:activated', this.activateList.bind(this));
+        messageBus.subscribe('static-list:activated', this.activateStaticList.bind(this));
+
+
+
         this.getLists();
         this.getNotes();
     },
@@ -88,29 +95,107 @@ export default {
 
     methods: {
 
-        async getLists() {
-            const lists = await listsRepository.getAll();
+        activateList({ id }) {
+            this.deactivateLists();
+            this.closeNoteDetails();
 
-            this.lists = lists;
+            this.listId = id;
+
+            this.updateNotes();
         },
 
-        async updateNotes() {
-            await this.getNotes();
+        activateStaticList({ id }) {
+            this.deactivateLists();
+            this.closeNoteDetails();
+
+            this.staticListId = id;
+
+            this.updateNotes();
         },
 
-        async getNotes() {
-            const notes = await notesRepository.getAll();
+        deactivateLists() {
+            this.listId = 0;
+            this.staticListId = 0;
+        },
 
-            this.notes = notes.sort(sortByTimeDESC)
-                .sort(sortByStarredASC)
+        resetFilters() {
+            this.listId = 0;
         },
 
         openNoteDetails({ id }) {
             this.noteId = id;
         },
 
+
         closeNoteDetails() {
             this.noteId = 0;
+        },
+
+        async updateNotes() {
+            await this.getNotes();
+        },
+
+        async getLists() {
+            const lists = await listsRepository.getAll();
+
+            this.lists = lists;
+        },
+
+        async getNotes() {
+            const notes = await this.getFilteredNotes();
+
+            this.notes = notes.sort(sortByTimeDESC)
+                .sort(sortByStarredASC);
+        },
+
+        async getFilteredNotes() {
+            if (this.listId) {
+                return await this.getNotesFilteredByList();
+
+            } else if (this.staticListId) {
+                return await this.getNotesFilteredByStaticList();
+
+            } else if (this.search) {
+                return await this.getNotesFilteredBySearch();
+
+            } else {
+                return await this.getAllNotes();
+            }
+        },
+
+        async getNotesFilteredByList() {
+            const list = await listsRepository.get(this.listId);
+            const notes = await this.getAllNotes()
+
+            const listedNotes = notes.filter(note => list.notes.includes(note.id));
+
+            return listedNotes;
+        },
+
+        async getNotesFilteredByStaticList() {
+            if (this.staticListId === 'inbox') {
+                return await this.getAllNotes();
+
+            } else if (this.staticListId === 'starred') {
+                const notes = await this.getAllNotes();
+
+                const starredNotes = notes.filter(x => !!x.starred);
+
+                return starredNotes;
+            }
+        },
+
+
+        async getNotesFilteredBySearch() {
+            const notes = await this.getAllNotes();
+
+            return notes;
+        },
+
+        async getAllNotes() {
+            const notes = await notesRepository.getAll();
+
+            return notes;
         },
     }
 

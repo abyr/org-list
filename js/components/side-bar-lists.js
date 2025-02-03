@@ -1,13 +1,11 @@
-import { ref } from 'vue';
-
-import staticLists from '../storage/static-lists.js';
+import SideBarStaticLists from './side-bar-static-lists.js';
+import SideBarListItem from './side-bar-list-item.js';
 
 export default {
 
-    setup() {
-        const systemLists = ref(staticLists);
-
-        return { systemLists };
+    components: {
+        SideBarListItem,
+        SideBarStaticLists,
     },
 
     props: {
@@ -16,21 +14,11 @@ export default {
 
     template: `
 
-<ul class="box-top16">
-    <li v-for="list in systemLists" class="flex-box-3 list-item" :data-id="list.id">
-        <span class="list-btn-icon" v-html="list.icon"></span>
-        <span class="list-btn">{{ list.title }}</span>
-        <span class="flex-box-3-push counter">
-            {{ list.notes && list.notes.length ? list.notes.length : '' }}
-        </span>
-    </li>
-</ul>
+<SideBarStaticLists />
 
 <ul>
     <li v-for="list in lists" class="flex-box-3 list-item" :data-id="list.id">
-        <span class="list-btn-icon">&#9776;</span>
-        <span class="list-btn">{{ list.title }}</span>
-        <span class="flex-box-3-push counter"> {{ list.incompleteLen || 0 }} </span>
+        <SideBarListItem :list="list" />
     </li>
 </ul>
 

@@ -8,7 +8,7 @@ export default {
     },
 
     template: `
-<div class="headline" :class="{ completed: !!note.completed }" @click="openNoteDetails">
+<div class="headline" :class="{ completed: !!note.completed }" >
     <input type="checkbox"
         :aria-labelledby="'toggle-completed-' + note.id + '-label'"
         :id="'toggle-completed-' + note.id"
@@ -23,6 +23,7 @@ export default {
         draggable="true"
         :id="'toggle-completed-' + note.id + '-label'"
         :data-id="note.id"
+        @click="openNoteDetails"
     >{{ note.title }}</span>
 
 </div>

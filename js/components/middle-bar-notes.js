@@ -1,6 +1,5 @@
 import CompletedNotes from './notes/completed-notes.js';
 import IncompleteNotes from './notes/incomplete-notes.js';
-import AddNote from './notes/add-note.js';
 
 export default {
 
@@ -12,7 +11,6 @@ export default {
     components: {
         CompletedNotes,
         IncompleteNotes,
-        AddNote,
     },
 
     computed: {
@@ -38,10 +36,6 @@ export default {
     template: `
 
 <div id="notes">
-    <div class="add-note-box">
-        <AddNote />
-    </div>
-
     <div class="flex-box-3 box-v16" v-if="search">
         <button id="reset-filter-btn"> < </button>
             <span> {{ search }}</span>

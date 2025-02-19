@@ -159,12 +159,12 @@ class LayoutView extends AsyncView {
 
     dragEnd(event) {
         const el = event.currentTarget;
-        
+
         setTimeout(() => {
             el.classList.remove('blurred');
         }, 0);
     }
-    
+
 
     dragOver(event) {
         event.preventDefault();
@@ -270,47 +270,47 @@ class LayoutView extends AsyncView {
                     <div class="middle-bar box-16">
 
                         <div class="middle-bar-header"></div>
-                        
+
                         <div class="middle-bar-content box-top16">
-    
+
                             <div id="notes">
                                 <div class="add-note-box">
-                                    <input id="add-note-input" 
-                                           class="add-note-input" 
-                                           type="text" 
+                                    <input id="add-note-input"
+                                           class="add-note-input"
+                                           type="text"
                                            placeholder="+ Add a note..." />
                                 </div>
-    
+
                                 ${(this.filter || this.list || this.staticList) ? `
                                     <div class="flex-box-3 box-v16">
                                         <button id="reset-filter-btn"> < </button>
-                                        
+
                                         ${this.filter && this.filter.tag ? `
-                                            <span># ${this.filter.tag}</span>              
+                                            <span># ${this.filter.tag}</span>
                                         ` : '' }
                                         ${this.list ? `
-                                            <span class="list-title" 
-                                                data-id="${this.list.id}" 
+                                            <span class="list-title"
+                                                data-id="${this.list.id}"
                                                 data-type="list"
                                                 contenteditable="true"
                                             >${this.list.title}</span>
-                                            
-                                            <button class="flex-box-3-push delete-list" 
+
+                                            <button class="flex-box-3-push delete-list"
                                                 data-id="${this.list.id}"
                                                 class="flex-box-3-push"
                                             >x Delete</button>
                                         ` : '' }
-                                        
+
                                         ${this.staticList ? `
-                                            <span class="list-title" 
-                                                data-id="${this.staticList.id}" 
+                                            <span class="list-title"
+                                                data-id="${this.staticList.id}"
                                             >${this.staticList.title}</span>
                                         ` : '' }
                                     </div>
                                 ` : ''}
 
                                 <div id="incomplete-notes"></div>
-    
+
                                 ${completedNotes.length ? `
                                     <div class="collapsible">
                                         <div class="collapsible-header" id="completed-notes-header">
@@ -331,12 +331,12 @@ class LayoutView extends AsyncView {
                                              aria-labelledby="completed-notes-section"
                                              class="collapsible-content"
                                              aria-expanded="${showCompleted ? 'true' : 'false'}"
-                                        >        
+                                        >
                                              <div id="completed-notes"></div>
                                         </div>
                                     </div>
                                 ` : ''}
-    
+
                             </div>
                         </div>
 

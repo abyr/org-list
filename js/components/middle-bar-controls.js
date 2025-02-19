@@ -27,11 +27,11 @@ export default {
     },
 
     template: `
-<button 
+<button
     id="delete-completed"
     aria-label="Delete completed"
     :disabled="!completedNotes.length"
     @click.prevent="deleteCompleted"
->&#10005; Delete completed</button>`,
+>&#9851; Delete completed</button>`,
 
 }

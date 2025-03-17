@@ -51,6 +51,7 @@ export default {
                 <MiddleBarControls :notes="sortedNotes" />
             </div>
             <div class="middle-bar-content box-top16">
+
                 <div class="add-note-box">
                     <AddNote />
                 </div>
@@ -154,14 +155,6 @@ export default {
             return tags;
         },
 
-        starredCount() {
-            return 0;
-        },
-
-        inboxCount() {
-            return 0;
-        },
-
         filterName() {
             if (this.listId) {
                 const list = this.lists.find(x => x.id === this.listId)
@@ -220,11 +213,13 @@ export default {
             this.tagId = '';
         },
 
-        resetFilters() {
+        async resetFilters() {
             this.listId = 0;
             this.staticListId = 0;
             this.tagId = '';
             this.search = '';
+
+            await this.updateNotes();
         },
 
         openNoteDetails({ id }) {

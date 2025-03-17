@@ -5,7 +5,6 @@ export default {
 
     props: {
         notes: Array,
-        search: String,
     },
 
     components: {
@@ -36,11 +35,6 @@ export default {
     template: `
 
 <div id="notes">
-    <div class="flex-box-3 box-v16" v-if="search">
-        <button id="reset-filter-btn"> < </button>
-            <span> {{ search }}</span>
-    </div>
-
     <div class="incomplete-notes">
         <IncompleteNotes :notes="incompleteNotes" />
     </div>

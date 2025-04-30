@@ -1,6 +1,3 @@
 [submodule "deps/client-side-storage"]
 	path = deps/client-side-storage
 	url = https://github.com/abyr/client-side-storage.git
-[submodule "js-test-tools"]
-	path = js-test-tools
-	url = https://github.com/abyr/js-test-tools.git

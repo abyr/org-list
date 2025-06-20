@@ -4,24 +4,23 @@ import sharedState2 from '../../js/classes/shared-state.js';
 
 describe('SharedMessageBus', () => {
 
-    it('should default to undefined', () => {
+    it('should defaults to undefined', () => {
         expect(sharedState1.getProp('prop1')).toBeUndefined;
     });
 
     it('should incProp', () => {
         const propName = 'prop2';
-        sharedState1.incProp(propName);
 
+        sharedState1.incProp(propName);
         expect(sharedState2.getProp(propName)).toEqual(1);
 
         sharedState2.incProp(propName);
-
-
         expect(sharedState1.getProp('prop2')).toEqual(2);
     });
 
-    it('should incProp', () => {
+    it('should setProp', () => {
         const propName = 'prop3';
+
         sharedState1.setProp(propName, 3);
         expect(sharedState2.getProp(propName)).toEqual(3);
 
